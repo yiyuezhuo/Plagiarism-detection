@@ -1,0 +1,331 @@
+基于神经张量融合网络的属性增强人脸识别
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+祝娇
+
+117106010723
+
+
+
+
+
+摘要
+
+深度学习在人脸识别方面取得了巨大的成功，但是深度学习的特征对于强烈的人际变化（如大的姿势变化）的影响仍然有限。据观察，一些面部特征（例如眉毛粗细，性别）对于这种变化是鲁棒的。我们目前的第一个工作是系统地研究如何融合人脸识别特征（FRF）和民间属性特征（FAF）使得能够在各种具有挑战性的情况下增强人脸识别性能。尽管FAF有这样的承诺，但我们发现在实践中，现有的融合方法无法在一些具有挑战性的情况下利用FAF提高人脸识别性能。因此，我们开发了一个强大的基于张量的框架，将特征融合作为一个张量优化问题。由于大量的参数需要优化，因此直接优化张量是不平凡的。为了解决这个问题，我们建立了低秩量子优化和双流门控神经网络之间的理论等价性。这种等价性允许使用标准的神经网络优化工具进行学习，从而导致准确和稳定的优化。实验结果表明，融合特征比个体特征更好，从而首次证明了人脸属性有助于人脸识别。我们在三个流行数据库MultiPIE（交叉姿势，照明和表情），CASIA NIR-VIS2.0（交叉模态环境）和LFW（非控制环境）上实现了最先进的性能。
+
+
+
+1.简介
+
+随着大数据集的推广，人脸识别技术已经取得了显着的进展，并且改进了用于生成不同于身份但是不受姿态，表达和照明等协变量影响的特征的方法。深度学习方法[41,40,42,32]最近被证明是特别有效的，这是由于端对端的表示学习具有区别性的人脸识别目标。尽管如此，由此产生的特征仍然显示出对现实世界场景中强烈的个人内部变化的完美不变性。我们观察到面部属性在这种具有挑战性的场景中提供了一个稳健的不变的提示。例如，性别和种族可能是不变的姿态和表情，而眉毛厚度可能是不变的照明和解决。总的来说，人脸识别特征（FRF）具有很强的辨别力，但不够健壮。而面部属性特征（FAF）是健壮的，但较少分辨。因此，如果能够设计出合适的融合方法，这两个特征是潜在的补充。就我们所知，我们是第一个系统地探索FAF和FRF在各种人脸识别场景中的融合。我们实验证明，这种融合可以大大提高人脸识别性能。
+
+虽然脸部属性是一个重要的面孔提示，在实践中，我们发现现有的融合方法，包括早期（特征）或晚期（分数）融合，不能可靠地提高性能[34]。特别是，在提供一些稳健性的同时，FAF通常不如FRF更具有歧视性。现有的方法不能协同地融合这种不对称的特征，并且通常导致比仅由更强特征（FRF）实现的更差的性能。在这项工作中，我们提出了一种新颖的基于张量的融合框架，它是唯一能够融合非对称FAF和FRF的融合框架。我们的框架通过从两个特征视图之间的所有交互中学习，提供比现有策略更强大和更强大的融合方法。为了在给定大量所需参数的情况下以一种易于处理的方式来训练张量，我们通过将张量约束为具有低秩形式来制定具有身份监督目标的优化。我们建立了这个低秩张量和两流门控神经网络之间的等价关系。给定这个等价性，用标准的深度神经网络工具箱对提出的张量进行简化优化。我们的技术贡献是：
+
+(1)系统调查和验证面部属性是各种人脸识别场景中的一个重要线索是第一项工作。特别是，我们对极端姿态变化进行人脸识别，即从正面正负90°，表明属性对于提高性能是重要的。
+
+(2)提出一种基于张量丰富的融合框架。我们展示了这种基于张量的融合的低阶Tucker分解具有等价的Gated Two-Stream神经网络（GTNN），允许通过神经网络学习进行容易而有效的优化。另外，我们将神经网络的见解引入张量优化领域。代码可用：https://github.com/yanghuadr/Neural-Tensor-Fusion-Network
+
+(3)我们通过脸部融合（新设计的“精益脸部”深度学习功能）和基于属性的特征，在三个流行的数据库上实现了最先进的脸部识别性能：MultiPIE（受控环境），CASIA NIR-VIS2.0（交叉模态环境）和LFW（不受控制的环境）。
+
+
+
+2.相关工作
+
+人脸识别 人脸表征（特征）是当代人脸识别系统中最重要的组成部分。有两种类型：手工制作和深度学习功能。
+
+广泛使用的手工人脸描述符包括局部二进制模式（LBP）[26]，Gabor滤波器[23]等。与像素值相比，这些特征对于身份是不同的，并且相对于个人内部的变化是相对不变的他们在受控环境下取得了令人满意的成绩。然而，在不受控制的环境（FRUE）中，他们在人脸识别上表现较差。有两个主要途径可以通过手工特征提高FRUE的性能，一个是使用非常高维特征（密集采样特征）[5]，另一个是通过下游度量学习来增强特征。
+
+与其中（in）方差被设计的手工特征不同，深度学习功能可以从数据中学习（in）方差。最近，卷积神经网络（CNN）在FRUE上取得了令人印象深刻的成果。 DeepFace [44]是一种经过精心设计的8层CNN，是一种早期标志性的方法。另一个着名的工作是DeepID [41]及其变种DeepID2 [40]，DeepID2 + [42]。 DeepID系列使用许多独立使用不同面部贴片进行训练的小型CNN的集合来提高性能。此外，最初设计用于物体识别的一些CNN，如VGGNet [38]和Incep tion [43]，也被用于人脸识别[29,32]。最近，引入了中心损失[47]来学习更多的错误特征。
+
+
+
+面部属性识别 面部属性识别（FAR）也得到了很好的研究。一个值得注意的早期研究[21]提取精心设计的手工特征，包括颜色空间和图像梯度的聚合，在训练一个独立的SVM来检测每个属性之前。至于脸部识别，深度学习功能现在优于FAR的手工功能。在[24]中，人脸检测和属性识别CNNs被精心设计，并且人脸检测网络的输出被输入到网络中。设计用于FAR的CNN目的的替代方案是微调用于目标识别的网络[56,57]。从表示学习的角度来看，支持不同属性检测的特征可以共享，从而导致一些研究调查多任务学习面部属性[55,30]。由于不同面部属性具有不同的流行性，多标签/多任务学习受到标签不平衡的影响，[30]解决了使用混合客观优化网络（MOON）的问题。
+
+
+
+使用面部属性的人脸识别 检测到的面部属性可以直接应用于身份验证。面部属性已被应用于加强面部验证，主要是在跨模态匹配的情况下，通过过滤[19,54]（例如要求潜在的FRF匹配具有正确的性别），模型切换[18 ]，或与传统的特征融合[27,17]。 [21]定义了65个面部属性，并提出二元属性分类器来预测他们的存在与否。属性分类器得分向量可以用于人脸识别。在深度学习的背景下，对于属性增强的人脸识别已经做了很少的工作。在移动设备上进行身份验证的少数基于CNN的属性特征之一[31]。将本地面部贴片送入精心设计的CNN以预测不同的属性。在CNN训练之后，SVM被训练用于属性识别，并且SVM得分向量提供用于面部验证的新特征。
+
+
+
+融合方法 现有的融合方法可以分为特征级（早期融合）和分数级（后期融合）。分数级融合是将计算后的相似性分数融合到基于每个视图的简单平均[37]或叠加另一个分类器[48,37]。特征级融合可以通过简单的特征聚合或子空间学习来实现。对于聚合方法，融合通常是通过简单的元素平均或产品（特征维度必须相同）或串联来执行[28]。对于子空间学习方法，首先将特征连接起来，然后将连接特征投影到子空间中，其中特征应该更好地相互补充。这些子空间方法可以是无监督或监督的。非监督融合不使用身份（标签）信息来学习子空间，如典型相关分析（CCA）[35]和双线性模型（BLM）[45]。相比之下，有监督融合使用了线性判别分析（LDA）[3]和局部保持投影（LPP）[9]等身份信息。
+
+
+
+神经张量方法 在神经网络中学习基于张量的计算已经被充分研究[39]和分解[16,52,51]张量。 然而，除了不同的应用和目标之外，关键的区别在于我们建立了一个富有的Tucker [46]分解的低秩融合张量和一个门控双流神经网络之间的新的等价性。 这使我们能够实现表达融合，同时保持易处理的计算和少量的参数; 并且通过标准的工具箱可以很容易的对融合张量进行优化。
+
+
+
+动机 面部属性特征（FAF）和面部识别特征（FRF）是互补的。然而在实践中，我们发现现有的融合方法通常不能有效地结合这些不对称的特征来提高性能。这激励我们设计一个更强大的融合方法。基于我们的神经张量融合方法，在第3节我们系统地探索了FAF和FRF在各种人脸识别环境中的融合，表明FAF能够增强识别性能。
+
+
+
+3.与CNN集成：体系结构
+
+在本节中，我们介绍由我们自己设计的用于人脸识别的CNN架构（LeanFace）和由[50,30]引入的面部属性识别（AttNet）。
+
+
+
+LeanFace 与一般的物体识别不同，人脸识别必须捕捉人与人之间的细微差别。受到文献[4]中的细粒度物体识别的启发，我们也在早期使用了大量的卷积层来捕捉细微的低层和中层信息。我们的激活功能是maxout，比竞争对手表现出更好的性能[50]。联合监督softmax损失和中心损失[47]用于训练。该架构总结在图1中。
+
+
+
+图 1
+
+
+
+AttNet 为了检测脸部属性，我们的AttNet使用Lighten CNN [50]来表示脸部。具体来说，AttNet由5个conv-activation-pooling单元组成，随后由256D全连接层组成。在[50]中解释了卷积核的数量。激活函数是Max-Feature-Map [50]，它是maxout的一个变种。我们使用损失函数MOON [30]，它是（1）属性分类和（2）域自适应数据平衡的多任务损失。在[24]中，定义了40个面部属性的本体。我们删除不能表征特定人物的属性，例如“戴眼镜”和“笑脸”，总共留下17个属性。
+
+一旦每个网络被训练，从LeanFace（256D）和AttNet（256D）的倒数第二个完全连接层提取的特征被提取为x和z，并输入到GTNN进行融合，然后进行面部识别。
+
+
+
+4.实验
+
+我们首先介绍我们的GTNN方法的实现细节。在4.1节中，我们在MultiPIE [7]上进行了实验，表明通过我们的GTNN方法的面部属性可以分别在姿态，光照和表情的存在下对提高人脸识别性能起到重要的作用。然后，将我们的GTNN方法与其他融合方法分别在第4.2节的CA-SIA NIR-VIS 2.0数据库[22]和第4.3节的LFW数据库[12]中进行比较。
+
+
+
+实施细节 在这项研究中，讨论了三个网络（LeanFace，AttNet和GTNN）。 LeanFace和AttNet使用MXNet [6]来实现，而GTNN使用TensorFlow [1]。我们使用大约6M的训练脸部缩略图来覆盖62K个不同的身份，以训练Lean-Face，这与所有的测试数据库没有重叠。AttNet使用CelebA [24]数据库进行培训。GTNN的输入是来自LeanFace和AttNet的瓶颈层（即预测层之前的完全连接的层）的两个256D特征。主要参数的设置如表1所示。注意，当损失停止下降时，学习率下降。具体而言，LeanFace和AttNet的学习率分别变化4次和2次。在测试中，LeanFace和AttNet花费大约2.9ms和3.2ms从一个输入图像中提取特征，而GTNN花费大约2.1ms将一对LeanFace和AttNet特征融合到GTX 1080图形卡中。
+
+
+
+表 1
+
+
+
+4.1 多PIE数据库
+
+多PIE数据库[7]包含超过750,000图像记录在不同的姿势，照明和表达变化4个会议337人。这是一个理想的测试平台，用于调查面部属性特征（FAF）是否补充了包括传统手工制作（LBP）和深度学习特征（LeanFace）在内的人脸识别特征（FRF）。
+
+
+
+设置 我们进行三个实验来研究姿态，光照和表情不变的人脸识别。姿势：仅在4个阶段使用姿势变化的图像（即中性照明和表情）。它涵盖了从左侧90°到右侧90°的偏航姿势。比较起来，大多数现有的作品只评估偏航范围（-45°，+ 45°）姿态的性能。照明：使用具有20种不同照明条件的图像（即，正面姿势和中性表情）。表情：使用7种不同的表情变化（即，正面姿势和中性照度）的图像。所有设置的训练集包括来自前200名受试者的图像和剩余的137名测试对象。在[59,14]之后，在测试集中，来自最早的会话的具有神经照明和表达的正面图像作为画廊工作，而其他的是探针。
+
+
+
+姿势 表2显示了姿态鲁棒人脸识别（PRFR）性能。显然，FRF和FAF，即GTNN（LBP，AttNet）和GTNN（LeanFace，AtNet）的融合效果比仅使用FRF的效果要好，显示了面部特征对人脸识别特征的互补作用。毫不奇怪，由于姿态变化是挑战人脸识别性能的主要因素，所以在极端姿势下LBP和LeanFace特征的性能大大下降。相比之下，在这种情况下，基于GTNN的融合可以有效地改善经典（LBP）和深度（Lean-Face）FRF特征，例如LBP（1.3％）和GTNN（LBP，AttNet） 16.3％，LeanFace（72.0％）和GTNN（LeanFace，AttNet）（78.3％），偏航角度90°。值得注意的是，尽管GTNN的强度高度不对称，但却能够有效地融合FAF和FRF。这在第5.2-5.3节中有更详细的研究。
+
+表 2
+
+与最先进的方法相比[14，59，11，58，15]（-45°，+ 45°），LeanFace由于其大的训练数据和深度学习的强大的生成能力而取得了更好的性能。在表2中，二维方法[14,59,15]使用MultiPIE图像训练模型，因此，它们很难在MultiPIE数据库中没有出现的姿势下推广到图像。3D方法[11,58]高度依赖准确的2​​D地标进行3D-2D建模拟合。但是，在较大的姿势下很难精确地检测这些地标，限制了3D方法的应用。
+
+
+
+照明和表达 照明和表情稳健的人脸识别（IRFR和ERFR）也是具有挑战性的研究课题。 LBP是IRFR [2]和ERFR [33]中使用最广泛的手工功能。为了研究面部特征的帮助，使用LBP和Lean-Face特征来进行IRFR和ERFR的实验。在表3中，GTNN（LBP，AttNet）明显优于LBP，分别为80.3％和57.5％（IRFR），分别为77.5％和71.7％（ERFR），显示了将手工功能与人工属性相结合的巨大价值。诸如眉毛形状之类的属性是光照不变的，而诸如性别之类的属性是表达式不变的。相比之下，LeanFace功能已经非常具有区分性，使测试集的性能饱和。所以AttrNet融合的余地很小，
+
+表 3
+
+
+
+4.2 CASIA NIR-VIS 2.0数据库
+
+CASIA NIR-VIS 2.0人脸数据库[22]是跨越近红外（NIR）图像和可见RGB（VIS）图像的最大的公众人脸数据库。这是一个典型的跨模态或异构的人脸识别问题，因为画廊和探针图像来自两个不同的光谱。图库和探针图像分别是VIS和NIR图像。它模拟了黑暗环境中人脸识别的场景，只有NIR图像可用于探测。这个数据库由725个主题的17,580幅图像组成，这些主题展示了个人内部的变化，如姿势和表情。类似于大多数人脸数据库，CASIA NIR-VIS2.0包括两个观点：观点1的培训和观点2包括10倍的绩效评估。按照标准评估方案，报告等级1识别率为10倍。
+
+
+
+与最先进的技术进行比较 如表4所示，LeanFace和Light CNN [49]由于其大量的训练数据和有效的深度学习架构，已经取得了非常出色的表现。值得注意的是，图库和探针分别是VIS和NIR图像，而LeanFace和Light CNN则仅使用VIS图像进行训练。他们在这里的效力表明，使用大数据进行训练的CNN学习到了一个足够强大的面部表征，它弥补了VIS和NIR之间的差距。 CNN架构+大的VIS培训图像大大超过手工特征+显式交叉模态学习模型[25,13,​​53]，这表明VIS-NIR可能不需要明确的跨模式学习。与CNN相比，LeanFace比Light CNN更好用，因为它使用（1）更大的训练数据（6M vs 5M）（2）更好的损失函数（softmax + centerloss vs softmax）和（3）更深的架构。 GTNN（LeanFace和AttNet）比LeanFace的效果更好，99.94％vs 97.27％，这意味着面部属性与NIR-VIS跨模态人脸识别中的LeanFace功能是互补的。
+
+
+
+表 4
+
+
+
+与其他融合方法比较 在之前的实验中，GTNN成功地融合了LeanFace和AttNet，尽管它们在个人力量上极度不对称。在这个实验中，我们通过与其他流行的融合方法进行比较，验证这是一个非常小的成就，如表5所示
+
+
+
+表 5
+
+简单的连接和平均融合实现了与仅使用LeanFace功能相同的准确率为97.27％。显然，较强的特征（即LeanFace）主导了融合特征。另外三种无监督融合方法：分数融合，CCA [35]和BLM [45]仅仅使用LeanFace和AttNet之间的准确性。当融合非常不对称的特征时，这使得融合特征变差的较弱特征的结果是常见的。这三种有监督的融合方法比LeanFace具有更高的准确性，显示了标签信息融合的重要性。有监督的融合方法也可以看作是度量学习，已经证明对于各种人脸识别场景是有效的[9,3,44]。然而，由于其更强的非线性建模能力，所提出的GTNN（99.94％）比LDA（98.33％）和LPP（98.58％）好。最后，我们重申，GTNN有可能与CNN进行端到端的培训，而LDA和LPP则不能。
+
+
+
+4.3 LFW数据库
+
+在不受控制的环境（FRUE）中的人脸识别近年来被广泛研究。 LFW [12]是最广泛使用的FRUE基准，其中包含13,233图像5,749个科目。为了评估，LFW被分成10个预定义的分割以用于交叉验证。我们遵循标准的“无限制，标记的外部数据结果”协议[12]进行测试。为了训练融合方法，我们使用来自LeanFace训练数据的1.5K个对象（与LFW对象不重叠）的0.1M图像。
+
+
+
+与最先进的技术进行比较  LeanFace由于其有效的架构（图3）和更大的训练数据而获得了非常有希望的99.57％的人脸识别率。尽管LeanFace几乎使LFW数据库饱和，但属性特征的融合进一步将错误率降低了19％。我们的完整方法（GTNN Fursion）在LFW上实现了最先进的人脸识别率。与两个最佳模型（FaceNet [32]，DeepID2 + [42]）相比，我们不使用网络集成，而DeepID2 +使用25个CNN的集合。 Facenet使用超过100M的图像进行训练，而我们只使用6M的图像。此外，Facenet使用三重丢失进行学习，这对于训练图像三重训练是非常困难的，而我们使用中心丢失[47]而不需要做这样的取样。请注意，LFW官方网站发布了一些其他大部分来自行业的有希望的结果。但是，他们的方法细节没有公布，所以我们不会比较。
+
+
+
+与其他融合方法比较 在这个实验中，LeanFace的表现只能和AttNet相媲美（99.57％vs 79.07％），不像NIR-VIS实验中的表现（97.27％v.s.2.38％）。然而，LeanFace已经取得了很高的认可率，几乎达到了基准水平，使得挑战性进一步提高。在表7中，所有替代方法都不能改善融合性能，超越了LeanFace的主要特征。即使监督方法LDA和LPP也没有改善，因为Lean-Face已经很强大了。与LeanFace相比，Score-fusion和CCA [35]使得表现更差。与所有的选择不同，GTNN由于其强大的非线性建模能力而进一步提高了性能。
+
+
+
+5．结论
+
+我们考虑了通过合并预测属性来增强人脸识别的问题。这为面部识别中复杂的个人内部变化提供了额外的稳健性。我们提出了一个强大的基于非线性张量的融合方法，可以将属性派生的特征与手工制作的和深度传统特征协同结合。我们的方法既容易实施，又因为我们建立了一个特定的神经网络结构的对应关系而进行有效的训练。
+
+
+
+参考文献
+
+	M. Abadi, A. Agarwal, P. Barham, E. Brevdo, Z. Chen,
+
+C. Citro, G. S.Corrado, A. Davis, J. Dean, M. Devin,
+
+S. Ghemawat, I. J. Goodfellow, A. Harp, G. Irving, M. Is- ard, Y. Jia, R. Jo´zefowicz, L. Kaiser, M. Kudlur, J. Leven- berg, D. Mane´, R. Monga, S. Moore, D. G. Murray, C. Olah,
+
+M. Schuster,  J. Shlens,  B. Steiner,  I. Sutskever, K. Talwar,
+
+P.  A.  Tucker,  V.  Vanhoucke,  V.  Vasudevan,  F.  B.  Vie´gas,
+
+O. Vinyals, P. Warden, M. Wattenberg, M. Wicke, Y. Yu, and X. Zheng. Tensorflow: Large-scale machine learning on heterogeneous distributed systems. CoRR, abs/1603.04467, 2016. 6
+
+	T. Ahonen, A. Hadid, and M. Pietikainen. Face description with local binary patterns: Application to face recognition.
+
+IEEE TPAMI, 2006. 6
+
+	P. N. Belhumeur, J. Hespanha, o P, and D. J. Kriegman. Eigenfaces vs. fisherfaces: Recognition using class specific linear projection. TPAMI, 1996. 3, 5, 7, 8
+
+	X. Cao. A practical theory for designing very deep convolu- tional neural networks. Technical Report, 2015. 5
+
+	D. Chen, X. Cao, F. Wen, and J. Sun. Blessing of dimension- ality: High-dimensional feature and its efficient compression for face verification. In CVPR, 2013. 2
+
+	T. Chen. Mxnet: A flexible and efficient machine learning library for heterogeneous distributed systems. In Workshop on Machine Learning Systems, 2015. 6
+
+	R. Gross, I. Matthews, J. Cohn, T. Kanade, and S. Baker.
+
+Multi-pie. Image and Vision Computing, 2010. 5, 6
+
+	D. R. Hardoon, S. Szedmak, and J. Shawe-Taylor. Canonical correlation analysis: An overview with application to learn- ing methods. Neural Computation, 16(12):2639–2664, 2004. 5
+
+	X. He, S. Yan, Y. Hu, P. Niyogi, and H. J. Zhang. Face recognition using laplacianfaces. IEEE TPAMI, 2005. 3, 7, 8
+
+	F. L. Hitchcock.  The expression of a tensor or a polyadic  as a sum of products. Journal of Mathematics and Physics, 6(1):164–189, 1927. 4
+
+	G. Hu, F. Yan, C.-H. Chan, W. Deng, W. Christmas, J. Kittler, and N. M. Robertson. Face recognition using a unified 3d morphable model. In ECCV, 2016. 6, 7
+
+	G. B. Huang, M. Ramesh, T. Berg, and E. Learned-Miller. Labeled faces in the wild: A database for studying face recognition in unconstrained environments. Technical report, 2007. 6, 8
+
+	F. Juefei-Xu, D. K. Pal, and M. Savvides. Nir-vis hetero- geneous face recognition via cross-spectral joint dictionary learning and reconstruction. In CVPRW, 2015. 7
+
+	M. Kan, S. Shan, H. Chang, and X. Chen. Stacked progres- sive auto-encoders (spae) for face recognition across poses.
+
+In CVPR, 2013. 6, 7
+
+	M. Kan, S. Shan, and X. Chen. Multi-view deep network for cross-view classification. In CVPR, 2016. 6, 7
+
+	R. Kiros, R. Salakhutdinov, and R. Zemel. Multimodal neu- ral language models. In ICML, 2014. 3
+
+	B. Klare, S. Bucak, A. Jain, and T. Akgul. Towards auto- mated caricature recognition. In ICB, 2012. 2, 5
+
+	B. Klare, M. Burge, J. Klontz, R. Vorder Bruegge, and
+
+	Jain. Face recognition performance: Role of demographic information. TIFS, 2012. 2
+
+	B. Klare, Z. Li, and A. Jain. Matching forensic sketches to mug shot photos. TPAMI, 2011. 2
+
+	A. Kumar and H. Daume´ III. Learning task grouping and overlap in multi-task learning. In ICML, 2012. 4
+
+	N. Kumar, A. C. Berg, P. N. Belhumeur, and S. K. Nayar. Attribute and simile classifiers for face verification. In ICCV, 2009. 2
+
+	S. Li, D. Yi, Z. Lei, and S. Liao. The casia nir-vis 2.0 face database. In CVPRW, 2013. 6
+
+	C. Liu and H. Wechsler. Gabor feature based classification using the enhanced fisher linear discriminant model for face recognition. IEEE Transactions on Image Processing, 2002. 2
+
+	Z. Liu, P. Luo, X. Wang, and X. Tang. Deep learning face attributes in the wild. In ICCV, 2015. 2, 5, 6
+
+	J. Lu, V. E. Liong, X. Zhou, and J. Zhou. Learning compact binary face descriptor for face recognition. TPAMI, 2015. 7
+
+	T. Ojala, M. Pietikainen, and T. Maenpaa. Multiresolution gray-scale and rotation invariant texture classification with local binary patterns. TPAMI, 2002. 2
+
+	S. Ouyang, T. M. Hospedales, Y.-Z. Song, and X. Li. Cross- modal face matching: Beyond viewed sketches. In ACCV, 2014. 2, 5
+
+	E. Park, X. Han, T. L. Berg, and A. C. Berg. Combining multiple sources of knowledge in deep cnns for action recog- nition. In WACV, 2016. 3, 5
+
+	O. M. Parkhi, A. Vedaldi, and A. Zisserman. Deep face recognition. In BMVC, 2015. 2, 8
+
+	E. M. Rudd, M. Gu¨nther, and T. E. Boult.  MOON: A mixed objective optimization network for the recognition of facial attributes. In ECCV, 2016. 2, 5
+
+	P. Samangouei and R. Chellappa. Convolutional neural net- works for attribute-based active authentication on mobile de- vices. arXiv:1604.08865, 2016. 2
+
+	F. Schroff, D. Kalenichenko, and J. Philbin. Facenet: A uni- fied embedding for face recognition and clustering. arXiv preprint arXiv:1503.03832, 2015. 1, 2, 8
+
+	C. Shan, S. Gong, and P. W. McOwan. Facial expression recognition based on local binary patterns: A comprehensive study. Image and Vision Computing, 2009. 6
+
+	A. Sharma, A. Kumar, H. Daume, and D. W. Jacobs. Gener- alized multiview analysis: A discriminative latent space. In CVPR. IEEE, 2012. 1, 5
+
+	J. Shawe-Taylor and N. Cristianini. Kernel methods for pat- tern analysis. Journal of the American Statistical Associa- tion, 2004. 3, 7, 8
+
+	O. Sigaud, C. Masson, D. Filliat, and F. Stulp. Gated net- works: an inventory. arXiv, 2015. 4
+
+	K. Simonyan and A. Zisserman. Two-stream convolutional networks for action recognition in videos. In NIPS. 2014. 3, 5
+
+	K. Simonyan and A. Zisserman. Very deep convolutional networks for large-scale image recognition. arXiv preprint arXiv:1409.1556, 2014. 2
+
+	R. Socher, D. Chen, C. D. Manning, and A. Y. Ng. Reasoning with neural tensor networks for knowledge base completion.
+
+In NIPS, 2013. 3
+
+	Y. Sun, Y. Chen, X. Wang, and X. Tang. Deep learning face representation by joint identification-verification. In NIPS, 2014. 1, 2
+
+	Y. Sun, X. Wang, and X. Tang. Deep learning face repre- sentation from predicting 10,000 classes. In CVPR, 2014. 1, 2
+
+	Y. Sun, X. Wang, and X. Tang. Deeply learned face repre- sentations are sparse, selective, and robust. arXiv preprint arXiv:1412.1265, 2014. 1, 2, 8
+
+	C. Szegedy, W. Liu, Y. Jia, P. Sermanet, S. Reed,
+
+D. Anguelov, D. Erhan, V. Vanhoucke, and A. Rabi- novich. Going deeper with convolutions. arXiv preprint arXiv:1409.4842, 2014. 2
+
+	Y. Taigman, M. Yang, M. Ranzato, and L. Wolf. Deepface: Closing the gap to human-level performance in face verifica- tion. In CVPR, 2014. 2, 7, 8
+
+	J. B. Tenenbaum and W. T. Freeman. Separating style and content with bilinear models. Neural Computation, 2000. 3, 7, 8
+
+	L. R. Tucker. Some mathematical notes on three-mode factor analysis. Psychometrika, 1966. 3
+
+	Y. Wen, K. Zhang, Z. Li, and Y. Qiao. A discriminative fea- ture learning approach for deep face recognition. In ECCV, 2016. 2, 4, 5, 8
+
+	D. H. Wolpert. Stacked generalization. Neural Networks, 5(2):241 – 259, 1992. 3, 5
+
+	X. Wu, R. He,  Z.  Sun,  and  T.  Tan.  A  light  cnn  for deep face representation with noisy labels. arXiv preprint arXiv:1511.02683, 2015. 7
+
+	Z. S. Xiang Wu, Ran He. A lightened cnn for deep face representation. arXiv:1511.02683, 2015. 5
+
+	Y. Yang and T. M. Hospedales. Deep multi-task represen- tation learning: A tensor factorisation approach. In ICLR, 2017. 3
+
+	Y. Yang and T. M. Hospedales. Unifying multi-domain multi-task learning: Tensor and neural network perspectives. In G. Csurka, editor, Domain Adaptation in Computer Vision Applications. Springer, 2017. 3
+
+	D. Yi, Z. Lei, and S. Z. Li. Shared representation learning for heterogenous face recognition. In FG, 2015. 7
+
+	H. Zhang, J. R. Beveridge, B. A. Draper, and P. J. Phillips. On the effectiveness of soft biometrics for increasing face verification rates. CVIU, 2015. 2
+
+	Z. Zhang, P. Luo, C. C. Loy, and X. Tang. Facial landmark detection by deep multi-task learning. In ECCV, 2014. 2
+
+	Y. Zhong, J. Sullivan, and H. Li. Face attribute prediction using off-the-shelf cnn features. In ICB, 2016. 2
+
+	Y. Zhong, J. Sullivan, and H. Li. Leveraging mid-level deep representations for predicting face attributes in the wild. In ICIP, 2016. 2
+
+	X. Zhu, Z. Lei, J. Yan, D. Yi, and S. Z. Li. High-fidelity pose and expression normalization for face recognition in the wild. In CVPR, 2015. 6, 7
+
+	Z. Zhu, P. Luo, X. Wang, and X. Tang. Deep learning identity-preserving face space. In ICCV, 2013. 6, 7

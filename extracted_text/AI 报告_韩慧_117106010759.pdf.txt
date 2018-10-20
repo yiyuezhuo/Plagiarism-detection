@@ -1,0 +1,402 @@
+基于视觉的目标检测技术在智能交通系统
+中的发展及应用研究综述
+韩慧 117106010759
+摘要 随着智能交通系统的日益发展，计算机视觉等技术的兴起，目标检测技术
+的研究成为智能交通系统领域的热点话题。本文基于计算机视觉，以目标检测
+技术为智能交通系统领域的研究对象，首先对国内外智能交通系统的研究现状
+和发展进行回顾和综述；其次，根据处理对象的不同，将目标检测分为基于背
+景建模和基于目标建模的方法；接下来，介绍基于视觉的目标检测技术在智能
+交通系统中的应用场景以及应用水平的分析；最后，对智能交通系统中目标检
+测技术的研究进行总结，对其发展趋势进行了展望。
+关键词 计算机视觉；目标检测；智能交通系统；无人驾驶汽车；人工智能
+Abstract: With the development of intelligent transportation system and computer
+vision technology, the research of object detection technology has become a hot topic
+in the field of intelligent transportation system. In this paper, based on the computer
+vision, object detection is the research target in the field of intelligent transportation
+system. First of all, status and development of the intelligent transportation system
+worldwidely are reviewed and summarized. Secondly, object detection is divided into
+two categories based on the background modeling and object-based modeling; Next,
+the vision-based object detection technology in the application of intelligent
+transportation system scenarios and application level analysis are introduced; Finally,
+study on object detection technology in intelligent transportation system is concluded
+and explored.
+
+1 引言
+近年来，互联网技术和人工智能技术的发展给汽车工业和交通系统带来了革
+命性的变化。随着城市化进程的发展，车辆的急剧增长、道路状况的限制等交通
+问题接踵而来，为了解决现有交通系统不堪承载的交通压力，智能交通系统
+（Intelligent Transportation System，简称 ITS）的概念应运而生。ITS 是在
+传统交通系统基础上发展起来的新型交通系统,利用先进的计算机处理技术、信
+息技术、数据通信技术、传感器技术及电子自动控制技术等运用在整个交通系统
+[1]
+中，形成统一全面的交通运输综合管理体系 。ITS 的开发有利于开发现有道路
+交通的潜能，解决现有交通、环境问题，提高了交通的安全性，ITS 作为汽车与
+公路的高度智能化，它的产生对于交通建设和运输领域来说是一场革命，它对运
+输形式和道路建设提出了更高的要求，而传统的功能汽车需要更加智能化以跟进
+交通系统的加速，于是，智能汽车应运而生。简单来说，智能交通系统的含义是
+智能汽车在智能公路设施以及智能交通管理系统中高效运输。
+智能汽车的研发成为智能交通系统发展中的重要环节，当代功能汽车逐渐进
+化成为运用先进辅助驾驶技术的智能汽车，最终实现车辆驾驶完全自动化的无人
+
+驾驶汽车。对集环境感知、规划决策、操作控制等功能于一体的无人驾驶汽车来
+说，目标检测是其环境信息感知的核心任务之一，是指将目标（如行人、车辆等）
+从视频序列中分割、定位出来。但许多原始的目标检测工作往往依赖于昂贵的雷
+达设备，比如测速发电机、手工标注的环境地图，极大地增加了自主车的成本。
+相比较而言，随着图像处理、计算机视觉等学科的发展，基于视觉的目标检测技
+术利用相对廉价的相机来替代雷达设备，即以摄像头所获取的图像来实现目标检
+测，逐渐成为当今自主驾驶领域研究的热点。
+本文基于计算机视觉，以目标检测技术为智能交通系统领域的研究对象，首
+先对国内外智能交通系统的研究现状和发展进行回顾和综述；其次，根据处理对
+象的不同，将目标检测分为基于背景建模和基于目标建模的方法；接下来，介绍
+基于视觉的目标检测技术在智能交通系统中的应用场景以及应用水平的分析；最
+后，对智能交通系统中目标检测技术的研究进行总结，对其发展趋势进行了展望。
+
+2 智能交通系统国内外研究现状
+智能交通系统主要通过集成信息技术、通信技术以及计算机技术来实现人、
+车辆及道路的管理，其研究内容主要包括：先进的交通管理系统、先进的驾驶员
+信息系统、先进的车辆控制系统、营运车辆调度管理系统、先进的公共交通系统、
+[2]
+先进的乡村交通系统和自动公路系统等六个方面 。智能交通系统的发展可以追
+溯到上个世纪 60 年代的美国，在 1994 年，第一届智能交通系统世界大会的召开
+象征了 ITS 时代的来临。美国、欧盟、日本发展智能交通系统较早，我国则起步
+较晚。
+美国是智能交通系统大国，2001 年 4 月召开了一次由 ITS 行业 260 名专家
+和有关人员参加的全国高层讨论会，并在会后制定了新世纪头 10 年 ITS 发展规
+划，对 ITS 的使命和发展目标进行了规划，为实现 ITS 的发展目标采取了大量行
+动。2009 年启动智能交通系统策略研究计划（2010-2014）
+，在美国建立一个车
+辆、行人和道路基础设施之间相互连接的智能交通环境，利用各种技术提高交通
+系统的机动性和安全性。
+上个世纪 70 年代，日本为了解决人多、车多而路少的矛盾，率先研制综合
+汽车交通系统（CACS）
+；进入 80 年代后，日本开始研究道路、车辆通讯系统（RSCA）
+[3]
+项目 ；1996 年至今，日本对 ITS 进行应用实施，并将智能交通系统作为国家和
+国际所有信息技术体系的基本组成部分。
+为了解决交通难题，欧盟自上世纪 80 年代开始重视智能交通系统，先后成
+立了欧盟道路交通协调组织 EUREKA 及其相关组织 ERTICO，提出并确定了政府间
+在科研以及开发等领域的合作，近年来 ERTICO 组织集成了车辆管理系统 CVIS、
+智能道路安全系统 COOPERS 以及其他无线通信系统来实现道路交通环境和车辆、
+[4]
+车辆和车辆之间的信息互通，进而提高交通安全性和运输效率 。
+我国智能交通系统方面起步较晚，经济水平的飞速发展也带动了智能交通的
+快速发展。1998 年 3 月，国家科委新技术开发中心与英国举行了 ITS 研讨会，
+此外，国家计委公布了“当前国家重点鼓励发展的产业、产品和技术目录”中，
+智能公路运输系统，也即本文所指“智能交通系统”，成立了交通智能运输系统
+[5]
+工程研究中心，标志了我国 ITS 发展的正式起步 。中国的智能交通系统发展迅
+速，在北京、上海、广州等大城市已经建设了先进的智能交通系统；其中，北京
+建立了道路交通控制、公共交通指挥与调度、高速公路管理和紧急事件管理的 4
+
+大 ITS 系统；广州建立了交通信息共用主平台、物流信息平台和静态交通管理系
+统的 3 大 ITS 系统。随着智能交通系统技术的发展，智能交通系统将在交通运输
+行业得到越来越广泛的运用。
+
+3 基于视觉的目标检测技术概述
+目标检测的任务是分割背景与检测目标，按照处理对象不同可分为基于背景
+建模的目标检测方法和基于目标建模的目标检测方法。
+3.1 基于背景建模的目标检测
+基于背景建模的方法适用于对运动目标进行检测，通过建立背景模型，将当
+前帧与背景模型进行对比匹配，通过阈值法来判断各个像素是否属于检测目标，
+最终对检测出的目标与背景进行分割进而检测目标。基于背景建模的目标检测方
+[6]
+法一般包含背景模型的初始化、模型维护以及前景检测与分割等步骤 。常用的
+[7]
+基于背景建模的目标检测方法有帧间差分法 （Frame difference method）
+、背
+[8]
+景减除法 （Background subtraction method）等。
+帧间差分法主要考虑相邻视频帧之间背景相对固定，而运动目标的位置变化
+会导致帧间运动区域像素值较大的差异，背景部分差值较小或接近于 0，相邻帧
+相减则可以对背景进行过滤，进而提取出运动目标。背景减除法是利用当前帧与
+背景图像或背景模型进行差分，对结果进行处理后得到运动目标区域。如果背景
+不变化，背景减除法的目标检测效果会很好，但是，不均匀光照、北京扰动以及
+摄像机的轻微抖动导致的小幅运动等，都会对所建立的背景模型造成大的影响，
+而更新背景模型并不是一件很容易的事情。所以，大量背景建模方法被提出，如
+[9]
+[10]
+[11]
+[12]
+[13]
+中值滤波 、均值滤波 、线性滤波 、隐马尔科夫模型 、Vibe 方法 、混合
+[14]
+高斯模型 （Gaussian Mixture Model,GMM）等。
+[15]
+[6]
+Bouwmans 和 Yin 等 对目标检测中背景建模方法进行了详细的讨论。基于
+背景建模的目标检测方法有很大的局限性，它比较适用于背景变化不大的场景进
+行目标检测，如智能交通系统中的监管系统；当背景容易发生变化时，如行驶中
+的无人驾驶汽车，大幅度的变化导致背景和目标的误检率提高，并且无法建立背
+景模型去进行实时性高、准确性强的目标检测任务。相对而言，基于目标建模的
+目标检测方法不受应用场景的限制，也不局限于运动目标，图像和视频都可以进
+行目标检测，应用范围更加广泛。
+3.2 基于目标建模的目标检测
+基于目标建模的方法通常利用目标的一些属性特征或者统计特征，如灰度、
+颜色、纹理、形状等，建立检测目标的表观模型，在图像中寻找目标的特征匹配
+[16; 17]
+，设计适当的分类器对其进行分类与检测。目标检测方法一般为：首先在给
+定的图像上选择一些候选区域，然后对这些区域进行特征提取，最后使用训练的
+分类器进行分类。
+[18; 19]
+近年来，大多数经典的目标检测方法
+是：产生相异的一系列拥有高召回
+[20; 21]
+率且计算速度快的目标候选框
+；基于此采用更强的分类器，比如基于卷积神
+[22; 23]
+经网络的一些方案
+，可以应用到更小的有希望的候选图像区域的子集中，避
+免了对大量的无用候选框的计算。
+
+根据目标检测方法将其分为三个阶段即为：目标候选框生成、特征提取和分
+类。下面将从这三个角度对基于目标建模的目标检测的发展现状进行综述。
+3.2.1 目标候选框生成
+近年来，不同类型的目标候选框生成方法陆续被提出，一个普遍的方法是对
+[21]
+图像过分割后使用若干相似性度量进行分组 ，比如 Selective Search 和
+[20]
+Multiscale Combinatorial Grouping (MCG) 。Selective Search 无需进行学
+习，首先将样本图像过分割，然后根据人为定义的距离进行聚合。MCG 则是先用
+现成方法快速得到一个层次分割的结果，然后利用边缘信息进行聚合。
+不同于上述需要通过聚合小块来生成目标候选框，比较有效率的方法也被提
+[24; 25]
+[26]
+出来，采用简单的似物性特征
+或者轮廓信息 来进行窗口的蛮力搜索，然后
+[25]
+通过对候选框打分排序来过滤掉低分的候选框。Bing 利用似物性特征，训练一
+[26]
+个简单的分类器来通过类似滑动窗口的方式来过滤候选框。Edge Boxes 跟
+Selective Search 一样不需学习，结合滑动窗口通过计算窗口内轮廓信息量进
+行打分，随后进行排序。
+[22; 23]
+深度神经网络
+的发展与进步使得目标候选框生成的研究逐渐深入，但深
+[19]
+度网络的时间复杂度较高也使得滑动窗口 的研究更具挑战性。大多数近期提出
+[27]
+[28]
+的方案的目标是学习如何使用基于卷积神经网络（CNN）特征 的二分割模型
+[29]
+的整体、参数能量 或窗口分类器来产生有希望的目标候选框。这些目标候选框
+生成方案在 PASCAL VOC 挑战赛上都取得了十分有效的结果。但是以上提到的方
+案的目标检测结果与地表实况的重合度只需达 50%以上，从自主驾驶角度来说需
+要更高的重合度进而保证自主驾驶目标检测的准确性，所以流行的方法如 R[19]
+[30]
+CNN 显著地落后于自主驾驶基准如 KITTI 的竞争者。目前在 KITTI 上最出色
+[31]
+的方案是 Chen 等人利用立体图像来创建准确的 3D 候选框 ，但是由于许多汽车
+只装载了单个相机，Chen 等人基于单目视觉，提出利用上下文模型和语义来产
+[32]
+生高召回率的基于类的 3D 目标候选框生成方案 。
+3.2.2 特征提取
+通过特征提取可以将高维的原始图像数据映射为低维的可区分维度空间数
+据，这些特征按照能否通过自学习得到可以分为基于人工设计的特征和基于学习
+[6]
+的特征 。
+基于人工设计的特征通常是通过人工设计提取的图像特征，如 Lowe 提出的
+[33]
+尺度不变特征（SIFT） 、Dalal 等为解决静态图像中的行人检测问题而提出的
+[34]
+梯度直方图特征（HOG） 、Felzenszwalb 等为了解决遮挡问题提出的基于局部
+[35]
+的可变形模型（DPM） 以及 Ahonen 等用于人脸特征描述的局部二值模式（LBP）
+[36]
+等。
+基于学习的特征主要是基于深度学习的方法逐层构建一个多层网络进行无
+监督学习所得的特征。由于深度学习特征是通过构建深层的网络结构直接从原始
+图像像素中提取所得，受到了广泛的关注与研究，最为著名的是基于卷积神经网
+[19]
+络的特征提取，此前 DPM 算法在目标检测领域一直处于核心地位。Girshick 等
+将大容量的卷积神经网络应用于自下而上的区域方法，提出了基于区域的卷积神
+经网络 (Regions with CNN features, R-CNN)，取代了传统的滑动窗口和手工
+设计特征，开启了基于深度学习目标检测的热潮。 Girshick 等将空间金字塔池
+[37]
+化网络（Spatial pyramid pooling based neural network, SPPNet） 用于 R[18]
+CNN，对其进行加速提出了 Fast R-CNN ，在计算速度和准确度上均有所提高，
+[38]
+而后在此基础上又提出了 Faster R-CNN 。Zhu 等将上下文信息引入深度卷积神
+
+[39]
+
+经网络中提出了 segDeepM 模型 。Han 等使用深度卷积神经网络进行特征提取
+[40]
+成功用于 MatchNet 中 。
+3.2.3 分类
+[41]
+分类是一种重要的数据挖掘技术，Kotsiantis 对现有的分类器进行了详细
+的综述，国际权威的学术组织 the IEEE International Conference on Data
+Mining （ICDM）2006 年 12 月评选出了数据挖掘领域的十大经典算法：C4.5、
+k-Means、SVM、Apriori、EM、PageRank、AdaBoost、KNN、Naïve Bayes 和 CART。
+[6]
+其中支持向量机（SVM）是使用最为广泛的分类器之一 ，它基于结构风险最小化
+原则，只回答测试样本属于正类还是负类的问题。支持向量机的最终求解可以归
+结为在线性约束条件下的二次凸规划问题，在小样本数据分类、非线性及高维模
+[42]
+式识别中应用甚广 。由于篇幅原因，这里不作赘述。
+
+4 应用场景和应用水平的分析
+人类接触的外界信息有 80%是视觉信息，图像和视频是对客观事物形象和逼
+真的描述，是主要的信息来源。目标检测是计算机视觉研究领域的热门课题，它
+融合了图像处理、模式识别、人工智能、自动控制等许多领域的前沿技术，在智
+能交通系统、智能监控系统、工业检测、航天航空等诸多领域得到了广泛的应用。
+目前的目标检测技术在智能交通系统领域中有着广泛的应用，例如智能公路设施
+和智能交通管理系统，自动检测车辆和行人在交通中出现的违规及不文明现象，
+大大减少交通管理的麻烦，与此同时，进行车辆号牌、车型识别以及具有车辆拥
+堵、你行和非法停车检测等功能；无人驾驶汽车，车辆在行驶过程中的环境感知
+需要知道前方的车辆、行人以及障碍物等信息，目标检测技术通过对车载相机拍
+摄的画面进行目标检测，进而提供目标检测定位结果给无人驾驶汽车的其它模块
+如车载决策系统、车辆控制系统等，进行车辆控制。
+由于车载摄像机和检测目标往往处于相对运动的状态，图像的背景经常会发
+生变化，有效而快速地构建背景模式会比较困难。与基于背景建模的方法不同，
+基于目标建模的目标检测方法不受场景限制，应用范围相对较广泛，且检测结果
+不需要进行再度分割。
+目标检测的准确性与鲁棒性和特征提取息息相关，相较于难度大而表现不够
+本质的人工设计特征，利用深度学习获取特征将特征设计问题转化为网络架构的
+问题，提升了目标检测的精度。然而，基于深度学习的特征表达方法也存在一些
+问题尚未定论，如深度学习的层数以及隐层节点个数如何确定，深度学习所学得
+[6]
+特征的优劣如何评价等 。
+目标检测方法通常使用多个摄像机从不同角度对同一场景进行监控，利用摄
+像机之间的视差值来计算场景的深度，这样可以克服外部环境因素的干扰，并能
+[43]
+实现背景的实时更新，提高运动目标检测的实时性和鲁棒性 。根据目标检测过
+程中使用相机的数目，基于视觉的目标检测技术可分为单目视觉、双目视觉和多
+目视觉。然而，绝大多数汽车只装载了单个相机，因此研究基于单目视觉的目标
+检测算法具有十分重要的意义。以单个摄像头所获取的图像来实现目标检测逐渐
+成为当今自主驾驶领域研究的热点，目前最佳的方案是 Chen 等基于单目视觉提
+[32]
+出利用上下文模型和语义来产生高召回率的基于类的 3D 目标候选框生成方案 。
+对于大多数只装载了一个相机的车而言，寻找更好的单目视觉目标检测方案依然
+
+重要。更重要的是，对于促进智能交通系统中举足轻重的无人驾驶汽车的发展而
+言, 基于单目视觉的目标检测研究具有广阔的应用前景。
+
+5 总结和展望
+在智能交通系统的发展过程中，基于视觉的目标检测技术的应用研究具有广
+泛而实际的经济意义。首先，相比于装载昂贵的雷达和各类传感器来进行目标检
+测，基于视觉的目标检测技术只需要无人驾驶汽车等设备装载普通的摄像机，即
+可达到目标检测的效果，相比于双目视觉目标检测方案，单目视觉目标检测只需
+要一个相机即可，这也是大多数汽车所具备的车载条件。基于视觉的目标检测技
+术研究性价比较高，既可以满足实时目标检测任务对速度和精度的高要求，与此
+同时，还可以取代传统交通系统中所装载的昂贵的雷达和各类传感器设备，从而
+降低智能交通系统领域中相关设备的生产成本，推动了诸如无人驾驶汽车产业化
+的发展，更利于推广和造福社会普通群众。
+然而，现有的目标检测方法大多数采用深度学习的方法，需要运行庞大的神
+经网络，对计算机的硬件条件要求较高，比如图像处理能力强的 GPU 等，而这样
+的硬件条件对于现有的无人车而言，也是较大的经济负担。就研究单目视觉目标
+检测算法的性价比这一角度而言，在提升单目视觉目标检测算法的准确性和速度
+的同时，如何降低对高性能昂贵的硬件依赖度也是需要着重考虑的经济因素。
+智能汽车、智能公路设施以及智能交通管理系统的同步发展对推动智能交通
+系统发展至关重要，目标检测技术成为了关键技术之一，虽然目前的检测结果仍
+然存在一定的局限性，但是依然具有广阔的发展前景。
+
+参考文献
+[1] 徐建闽. 智能交通系统[M]. 北京: 人民交通出版社, 2014.
+[2] 史其信，陆化普. 智能交通系统的关键技术及研究发展策略[J]. 中国土木工程学会第
+八届年会论文集, 1998.
+[3] 徐中明, 陈旭, 贺岩松, et al. 智能交通系统(ITS)中的智能汽车技术[J]. 重庆大学
+学报:自然科学版, 2005, 28(8): 17-21.
+[4] 许劲松. 智能交通中目标检测与分类关键技术研究[D]. 南京理工大学, 2014.
+[5] 周允, 张西文. 智能汽车及智能汽车运输系统发展综述[J]. 汽车实用技术, 1999,
+(1): 1-4.
+[6] 尹宏鹏，陈波，柴毅，刘兆栋. 基于视觉的目标检测与跟踪综述[J]. 自动化学报, 2016,
+42(10): 1466-1489.
+[7] Song H, Shi F. A real-time algorithm for moving objects detection in video
+images[C]. Intelligent Control and Automation, 2004. WCICA 2004. Fifth World
+Congress on, 2004: 4108-4111 Vol.5.
+[8] Jain R, Nagel H H. On the Analysis of Accumulative Difference Pictures from
+Image Sequences of Real World Scenes[J]. IEEE transactions on pattern analysis
+and machine intelligence, 1979, 1(2): 206-14.
+[9] Cucchiara R, Grana C, Piccardi M, et al. Detecting moving objects, ghosts,
+and shadows in video streams[J]. IEEE Transactions on Pattern Analysis & Machine
+Intelligence, 2003, 25(10): 1337-1342.
+[10] David C, Gui V. Automatic background subtraction in a sparse representation
+framework[C]. International Conference on Systems, Signals and Image Processing,
+2013: 63-66.
+[11] Li D, Xu L, Goodman E D. Illumination-Robust Foreground Detection in a Video
+Surveillance System[J]. IEEE Transactions on Circuits & Systems for Video
+Technology, 2013, 23(10): 1637-1650.
+[12] Rittscher J, Kato J, Joga S, et al. A Probabilistic Background Model for
+Tracking[J], 2000.
+[13] Barnich O, Droogenbroeck M V. ViBE: A powerful random technique to estimate
+the background in video sequences[C]. IEEE International Conference on Acoustics,
+Speech and Signal Processing, 2009: 945-948.
+[14] Stauffer C, Grimson W E L. Learning Patterns of Activity Using Real-Time
+Tracking[M]. IEEE Computer Society, 2000: 747-757.
+[15] Bouwmans T. Traditional and recent approaches in background modeling for
+foreground detection: An overview[J]. Computer Science Review, 2014, 11–12: 3166.
+[16] Zhang S, Jing Z, Li J, et al. Small target detection of infrared image based
+on energy features[C]. International Conference on Neural Networks and Signal
+Processing, 2004: 672-676.
+[17] Deng H, Himed B, Wicks M C. Image feature-based space-time processing for
+ground moving target detection[J]. Signal Processing Letters IEEE, 2006, 13(4):
+216-219.
+
+[18] Girshick R. Fast R-CNN[C]. 2015 IEEE International Conference on Computer
+Vision (ICCV), 2015: 1440-1448.
+[19] Girshick R, Donahue J, Darrell T, et al. Rich Feature Hierarchies for
+Accurate Object Detection and Semantic Segmentation[C]. 2014 IEEE Conference on
+Computer Vision and Pattern Recognition, 2014: 580-587.
+[20] Arbelaez P, Ponttuset J, Barron J, et al. Multiscale Combinatorial
+Grouping[C]. IEEE Conference on Computer Vision and Pattern Recognition, 2014:
+328-335.
+[21] Van D S, Koen E A, Uijlings J R R, Gevers T, et al. Segmentation as selective
+search for object recognition[C]. IEEE International Conference on Computer
+Vision, 2011: 1879-1886.
+[22] Krizhevsky A, Sutskever I, Hinton G E. ImageNet Classification with Deep
+Convolutional Neural Networks[J]. Advances in Neural Information Processing
+Systems, 2012, 25(2): 2012.
+[23] Simonyan K, Zisserman A. Very Deep Convolutional Networks for Large-Scale
+Image Recognition[J]. Computer Science, 2014.
+[24] Alexe B, Deselaers T, Ferrari V. Measuring the Objectness of Image Windows[J].
+IEEE Transactions on Pattern Analysis & Machine Intelligence, 2012, 34(11): 2189202.
+[25] Cheng M M, Zhang Z, Lin W Y, et al. BING: Binarized Normed Gradients for
+Objectness Estimation at 300fps[J], 2014: 3286-3293.
+[26] Zitnick C L, Dollár P. Edge Boxes: Locating Object Proposals from Edges[M].
+Springer International Publishing, 2014: 391-405.
+[27] Ghodrati A, Diba A, Pedersoli M, et al. DeepProposal: Hunting Objects by
+Cascading Deep Convolutional Layers[C]. IEEE International Conference on Computer
+Vision, 2015: 2578-2586.
+[28] Krahenbuhl P. Learning to propose objects[C]. IEEE Conference on Computer
+Vision and Pattern Recognition, 2015: 1574-1582.
+[29] Lee T, Fidler S, Dickinson S. Learning to Combine Mid-Level Cues for Object
+Proposal Generation[C]. IEEE International Conference on Computer Vision, 2015:
+1680-1688.
+[30] Geiger A. Are we ready for autonomous driving? The KITTI vision benchmark
+suite[C]. IEEE Conference on Computer Vision and Pattern Recognition, 2012: 33543361.
+[31] Chen X, Kundu K, Zhu Y, et al. 3D Object Proposals for Accurate Object Class
+Detection[C]. Neural Information Processing Systems, 2015.
+[32] Chen X, Kundu K, Zhang Z, et al. Monocular 3D object detection for autonomous
+driving[C]. IEEE Conference on Computer Vision and Pattern Recognition, 2016:
+2147-2156.
+[33] Lowe D G, Lowe D G. Distinctive Image Features from Scale-Invariant
+Keypoints[J]. International Journal of Computer Vision, 2004, 60(2): 91-110.
+[34] Dalal N, Triggs B. Histograms of Oriented Gradients for Human Detection[C].
+IEEE Conference on Computer Vision & Pattern Recognition, 2005: 886-893.
+[35] Felzenszwalb P F, Girshick R B, Mcallester D, et al. Object Detection with
+
+Discriminatively Trained Part-Based Models[J]. IEEE Transactions on Pattern
+Analysis & Machine Intelligence, 2014, 32(9): 1627-45.
+[36] Ali A, Hussain S, Haroon F, et al. Face Recognition with Local Binary
+Patterns[J]. Bahria University Journal of Information & Communication
+Technologies, 2012, 5(12): 469-481.
+[37] He K, Zhang X, Ren S, et al. Spatial Pyramid Pooling in Deep Convolutional
+Networks for Visual Recognition[J]. IEEE Transactions on Pattern Analysis &
+Machine Intelligence, 2014, 37(9): 1904-16.
+[38] Ren S, He K, Girshick R, et al. Faster R-CNN: Towards Real-Time Object
+Detection with Region Proposal Networks[J]. IEEE Transactions on Pattern Analysis
+& Machine Intelligence, 2015: 1-1.
+[39] Zhu Y, Urtasun R, Salakhutdinov R, et al. segDeepM: Exploiting segmentation
+and context in deep neural networks for object detection[C]. IEEE Conference on
+Computer Vision and Pattern Recognition, 2015: 4703-4711.
+[40] Han X, Leung T, Jia Y, et al. MatchNet: Unifying feature and metric learning
+for patch-based matching[C]. Computer Vision and Pattern Recognition, 2015: 32793286.
+[41] Kotsiantis S B, Zaharakis I D, Pintelas P E. Machine learning: a review of
+classification and combining techniques[J]. Artificial Intelligence Review, 2006,
+26(3): 159-190.
+[42] 姚楠. 基于单目视觉的运动目标跟踪定位技术研究[D]. 上海交通大学, 2014.
+[43] 胡明合, 华庆伟. 基于双目视觉的运动目标检测算法研究[J]. 消费电子, 2014,
+(10): 134-134,136.
+
+

@@ -1,0 +1,371 @@
+南京理工大学经济管理学院
+
+课程报告
+
+
+
+	课程名称：       人工智能原理与方法       
+
+	作业题目：  基于协同过滤算法的个性化推荐  
+
+	         系统的应用概述             
+
+   姓    名：            楚榕珍              
+
+	学    号：         117107010882           
+
+成    绩：                                  
+
+
+
+任课教师评语：
+
+
+
+
+
+
+
+
+
+
+
+
+
+            签名：               
+
+                            年   月   日
+
+
+
+      基于协同过滤算法的个性化推荐系统的应用概述
+
+ 1.研究背景 
+
+在科技水平日新月异的进步和发展中，世界进入了一个信息爆炸的“数字时代”。特别是在互联网更新至 Web2.0 后，由于其出色的互动和传播能力，互联网已经赢得了“第四媒体”的美誉，与此相关的网络购物和广告业务也随之兴起。截止2017今年6月，中国网民数量已达7.51亿。在规模庞大的网民群体中，分布着不同年龄、不同职业和不同地区的人民，总而言之，互联网的影响已经深入到人民生活的各个方面。正如各种科幻小说和电影所描写的，人类正在步入一个越来越便捷的数字化时代，网络从一种便捷高效的通信传输工具慢慢变成一个包罗万千的的虚拟世界。
+
+数字时代最明显的特征就是互联网上无处不在的数据信息，通过这些数据可满足用户群体对信息的需求。但在如此多的数据包围中，用户不得不面对大量无用的信息，使他们没有精力在互联网上去搜寻他们想要的那部分，这就是通常所说的信息过载（information overload）问题。
+
+要解决信息过载问题，就必须根据用户的需要对数据进行有效地筛选和过滤，尽可能地将用户感兴趣或者与用户有关联的信息呈现在用户面前。在这种需求的促动下诞生了推荐系统（Recommender system），推荐系统能有效地将重要信息和次要信息分层传递给用户，根据用户的需求，智能地将用户感兴趣的信息、物品推荐给户[1]。相较于搜索引擎、分类目录，推荐系统能够有效地运用用户的历史记录，通过研究其中的模式和兴趣，帮助用户寻找信息需求。
+
+2.研究目的及意义
+
+    个性化推荐系统是当今最成功和最实用的信息服务技术之一，它善于发现用户的兴趣喜好。由个性化推荐产生了许多重要的应用，包括电子商务网站、视频和电影网站、音乐网络电台、在线阅读社区、媒体和邮件等。各个高校对个性化推荐的研究也很热衷，展开了相应的独立学科进行学习和研究[2]。
+
+推荐系统根据用户的历史行为寻找用户的兴趣类别，通过这些兴趣类别向用户推荐感兴趣的物品。随着互联网的普及，互联网商务平台的规模也不断扩增，各类物品和店铺的数据持续增长，用户总要花非常多的精力才能找到满意的物品，这种让用户淹没在诸多选择的用户体验导致用户不断流失。个性化推荐就是为了解决这些问题而存在，通过大数据分析和挖掘技术的应用，推荐系统能够应用在各大互联网商平台，准确、高效的推荐系统可以挖掘用户潜在的消费倾向，为用户提供信息筛选并提供决策建议。在日趋激烈的竞争环境下，个性化推荐系统已经不仅仅是一种商业营销手段，更重要的是可以增进用户的忠诚度。个性化推荐系统已经给众多行业带来了巨大的利益。
+
+而协同过滤是个性化推荐系统中应用比较成功的推荐技术，各种协同过滤算法涵盖了数据挖掘、人工智能、机器学习、统计学、管理科学等方面的内容，通过对协同过滤技术的研究，对这些学科也是一种促进。由于我国的个性化信息服务相对于先进国家存在较大差距，以个性化推荐的协同过滤技术为研究目标，对推进我国个性化信息服务的发展，缩小与先进国家的差距，同样具有深远的实践意义。
+
+3.国内外研究现状
+
+ 1987 年 Malonedeng 等研究者最早提出了推荐系统（Recommender System）这一概念，一开始是通过评分来向用户进行推荐的，且只应用在电子商务领域中[3]。随着推荐系统的应用普及和发展，越来越多的学者对推荐系统进行了更加深入的研究和改进，逐步提出了各种推荐方法，推荐系统也广泛应用到各个领域中，并且人们对推荐系统的认识和研究也在不断完善。现今，Resnick、Dey 等人又提出了推荐系统的新概念，即使用一定分析方法分析用户的偏好行为，从而向用户推荐其满意的信息，满足用户的个性化需求，个性化推荐系统也应运而生[4]。
+
+目前推荐系统主要有两种，一种是基于电商平台的互联网商务推荐系统，另一种利用数据挖掘方法将用户可能感兴趣的广告和网页作为对象推送的系统[5]。现有的推荐算法主要包括基于内容、协同过滤、关联规则和混合推荐等算法，无论何种算法，现在的热门研究方向都是提高推荐算法的效率和质量[6]。
+
+国外最早在1995年就由斯坦福大学和麻省理工学院先后提出个性化推荐系统，IBM、AT&T和NEC等公司和研究院在很早前就开始对推荐系统进行研究，到目前为止，最具名气的是谷歌（Google）、雅虎（Yahoo）、亚马逊（Amazon）等公司的推荐系统平台。第一个推荐系统Tapestry是电子文档过滤系统，要求用户对已经阅读过的文档进行评价，以方便其它用户根据评价选择适合自己的文档[7]。不久之后，自动化协同过滤推荐系统Group Lens由Resnick等人提出[8]，Group Lens通过让用户对新闻评分的方式来搜集他们的偏好，根据评分的相似度来帮助用户寻找他们比较喜欢的新闻。后来，Konstan等人[9]、Miller等人[10]、对Group Lens功能进行了丰富和扩展，使得Group Lens成为了一个基于开放式架构的分布式系统。Group Lens的出现很大程度上促进了个性化推荐技术的发展，此后出现了许多与之相似的协同过滤推荐服务，如音乐社区Last.fm和Ringo、电影网站Netflix和Movie Lens等，这些网站将推荐系统应用在不同的领域[11]。
+
+自从Gold  Berg在文献中第一次提出“协同过滤”以来，协同过滤逐渐地被接受和认可，国内外的很多研究人员针对协同过滤技术开展了大量的研究工作，并取得了一定的成果。Manos Papagelis等人提出了一个通过信任的推荐方法来降低稀疏性，并可以解决协同过滤推荐算法冷启动问题[12]。O’Connor等提出了一种基于项目聚类的协同过滤算法，通过在相应的簇中寻找目标项目的最近邻进而产生推荐，这一算法优化了协同过滤推荐算法的整体性能。 
+
+中国的互联网发展较国外稍慢，在本世纪初的时候，国内才开始对推荐系统有了深入的研究，至今为止也取得了不少的成果[13]。马文峰等人设计并实现了个性化协同推荐系统，在系统中添加辅助措施来帮助人们有效地获取信息。最初的改进是在传统推荐算法上对时间进行加权，其原理是通过用户兴趣随时间的转移，通过不同时间段的影响因子来对推荐热度进行计算，这是由刘东辉率先提出的。高滢等人通过用户等级和似然关系模型相结合来改进协同过滤算法，有效地提高了推荐质量[14]。后来，用户数量的剧增需要对算法进行性能的改进，针对众多用户导致的数据稀疏性（sparsity）的问题，何安提出了把聚类和协同推荐联合的推荐算法，而李聪等人通过采用领域最近邻的方法预测用户评分，按照用户有无推荐能力将用户分为两类，没有推荐能力的不计算相似性，从而提高了推荐效率和性能，有效地解决了矩阵稀疏性的问题[15]。 
+
+国内众多的研究者普遍忽略了其他类型的推荐算法，将研究的重点偏重于协同过滤推荐算法。再加上起步较晚，对推荐算法本身的问题还有很多需要学习和解决的地方。同时，由于自然语言处理问题尚未很好地得到解决，导致了基于汉语文本处理的推荐系统的实际应用受到了很多限制。国内现有的推荐技术大多都是基于项目评分和针对历史浏览记录来实现用户建模，从而发现用户兴趣的。表2列出了协同过滤与其他几种推荐技术各自主要的优势和不足。
+
+                   表2 个性化推荐技术比较
+
+
+
+综上所述，协同过滤算法仍然是当前研究的重点。在成熟的协同过滤算法的基础上作性能和准确率的改进是现在推荐算法的研究主流。协同过滤算法在未来还有很大的发展前景，包括新用户兴趣模型的研究、改进评价方法、推荐解释、融合云计算技术等，都具有比较重要的研究意义。
+
+协同过滤算法 
+
+   协同过滤系统利用用户对项目的评分数据计算用户相似性或项目相似性，然后根据相似性进行推荐，分别称为基于用户的协同过滤和基于项目的协同过滤。协同过滤系统的最大优点是对推荐对象没有特殊的要求，能处理音乐、电影等难以进行特征抽取的项目。 
+
+协同过滤系统是目前应用最为广泛，也是效果最好的个性化推荐系统。Rich（1979）设计的 Grundy 被认为是第一个投入应用协同过滤系统，该系统可以建
+
+立用户兴趣模型，并根据模型推荐相关的书籍。Group Lens 系统（Konstan  et  al, 1997）建立用户信息群，并依据群内发布的社会信息过滤系统计算用户相似性，进而提供协同推荐。Ringo 系统（Shardanand & Maes, 1995）利用相同的社会信息过滤方法向用户进行音乐推荐。其他的利用协同过滤方法进行推荐的系统还有Amazon.com（Linden et al, 2003）的书籍推荐，Jester（Goldberg et al, 2001）的笑话推荐，Phoaks（Terveen et al, 1997）的 WWW 信息推荐等等。
+
+3.1算法原理
+
+    协同过滤推荐系统的算法可以分为两类：基于记忆（memory-based）的和基于模型（model-based）的算法。基于记忆的算法根据系统中所有被打过分的产品信息进行预测。设需要预测的值为用户 u 对项目 i 的打分,，设U~为与用户 u相似度比较高的用户集合，则预测,的函数形式有：
+
+                                                  （3-1a）
+
+                                           （3-1b）
+
+
+
+                                   （3-1c）
+
+其中 k 为一个标准化因子，通常，表示用户 u和之间的相似性。用户 u 的平均打分定义为，其中。最简单的计算方法如公式（3-1a）所示，直接计算相似邻居的平均打分值。然而最常用的是加权平均，即公式（3-1b），其中权值即为 ，两个用户越相似则权值越大，加权因子 k 是为了计算不同推荐系统的用户相似性而准备的。公式（3-1c）通过只考虑不同用户平均喜好程度的偏差，克服了评判尺度不一致的缺点，一般而言具有比（3-1b）更高的精确度。
+
+   基于模型的算法收集打分数据进行学习并推断用户行为模型，进而对某个项
+
+目进行预测打分。基于模型的协同过滤算法和基于记忆的算法不同在于，基于模
+
+型的方法不是基于一些启发规则进行预测计算，而是基于对已有数据应用统计和机器学习得到的模型进行预测。Breese 等人（1998）提出一个基于概率的协同过滤算法，其打分公式如下：
+
+                           （3-2）
+
+上式假设打分值为 0-n 之间的整数值，概率 Pr 表示基于用户以前的打分，用户要给项目 i 打指定分数的概率。其它基于模型的协同过滤推荐系统有概率相关模型（Getoor & Sahami, 1999），极大熵模型（Pavlov & Pennock, 2002），线性回归（Sarwar et al, 2001），基于聚类的 Gibbs 抽样算法（Ungar & Foster, 1998），Bayes 模型（Chien & George, 1999）等等。
+
+总的来说，协同过滤系统具有推荐新信息的能力，可以发现用户潜在的但自
+
+己尚未察觉的兴趣偏好；能够推荐艺术品、音乐、电影难以进行内容分析的项目；但是也面临很多问题，主要有：
+
+(1)稀疏性[16-19]。实际的网站中用户和项数量庞大，而用户通常只对一小部分项进行评分，可用千计算用户项间相似性的数据非常有限，使得最近邻搜寻不够准确，推荐质量较差。经常可以看到的现象是两个用户项间没有任何共同评分项，导致相似性无法计算。即使有的用户项间相似性可以计算，可靠性也难以保证。
+
+(2)多内容[20]。传统的协同过滤没有考虑项目类别的影响，当网站中项目类别的内容完全不同时，传统的协同过滤算法搜寻出的最近邻往往与标用户仅在个别项类上偏好相似，导致推荐结果不够合理。
+
+(3)可扩展性[16,21,22]。网站中用户和项目的数量庞大例如商城拥有数以百万计的商品，且不断增加，这使得用户项目评分矩阵成为高维矩阵，由此产生了协同过滤的可扩展性问题，即随着用户和项数量的增多，算法的计算复杂度急增加，严重影响了系统推荐的实时性。群体推荐’。随着各种虚拟社区的不断涌现，参加社区活动的用户越来越多，频繁的社区交往使用户结成群体，共同参加社区活动，他们的行为表现出一定的群体特征。构建群体推荐系统，向群体用户提供个性化推荐，减少他们搜集信息所耗费的时间和精力成为协同过滤技术面临的新的挑战。
+
+3.2相关技术的分析和比较
+
+  针对协同过滤算法出现的主要问题，各学者和研究人员纷纷提出了改进技术。
+
+3.2.1针对稀疏性问题的相关技术分析比较
+
+实际的网站中项目的数量庞大且不断增加，而用户通常只对一小部分项目进行评分一般不超过项目总数的1%[17]，导致用户的评分数据非常稀疏。数据稀疏性从以下两方面对协同过滤产生不利影响：(1)使得最近邻搜寻不够准确，从而影响协同过滤的推荐质量；(2)搜寻到的最近邻用户评分过少，影响推荐准确性并导致推荐覆盖率降低。研究人员提出了大量解决稀疏性问题的方法，本文将这些方法归纳为六类：空值填补、新相似性方法、结合基于内容的推荐、推荐结果融合、图论和其他方法。
+
+3.2.1.1空值填补
+
+采用有效的预测方法对评分矩阵中的未评分项进行填补，可以提高矩阵中的评分密度，降低数据稀疏性对协同过滤推荐的影响。
+
+最简单的做法是将未评分项设定为一个缺省值，这个值可以是评分中值、众数、用户评分均值、项目评分均值等[16]。由于未评分项获得的评分值不可能完全相同，因此缺省值方法的可信度不高。邓爱林[23]等人采用基于项目的协同过滤方法对用户评分项并集中的评分空值进行填补，在填补后的并集上计算用户间的相似性。李聪等人[25]认为基于项目的协同过滤方法本身存在的稀疏性问题影响了填补效果，他们对邓爱林等人的方法进行了改进，采用领域最近邻方法预测评分项并集中的未评分值。文献[26]根据用户评分向量交集大小选择候选邻居集合，采用神经网络预测用户对项目的评分，减小候选邻居评分数据的稀疏性。
+
+Zhang[24]等人指出，基于用户的协同过滤方法搜寻出的最近邻绝大多数对目标项目没有评分，从而严重影响了评分预测的准确性。为此他们设定了一个迭代次数阈值，循环执行基于用户的协同过滤方法对最近邻的未评分项进行填补，在得到所有最近邻对目标项目的评分后，采用传统的协同过滤方法生成最终的预测评分。Jeong[4]等人将基于用户和基于项目的协同过滤方法相融合，使用该混合方法对用户项目评分矩阵中的未评分元素进行循环填补，直到评分矩阵稳定为止。文献[27]采用均值填补、线性回归预测、预测均值匹配、贝叶斯分类预测等多种方法对原始评分矩阵进行填补，并比较了各填补方法的准确性得到的结论是：当评分矩阵异常稀疏时，均值填补的准确性最高；当评分矩阵相对稠密时，贝叶斯分类预测则是最理想的填补方法。
+
+3.2.1.2新相似性方法
+
+传统的相似性度量方法对稀疏数据的处理能力较差，研究人员提出了一些新的相似性度量方法来解决这一问题。
+
+周军锋等人[28]使用一种修正的条件概率方法计算项目间的相似性，他们的方法体现了共同评分数、评分值差异和项目所属类别对项目相似性计算的共同影响。在项目获得的评分较少时，他们的方法比传统的基于条件概率的方法计算作用更加突出。张光卫等人[29]设计了一种基于云模型的相似性度量方法LICM。LICM根据用户的评分情况计算用户的评分频度向量，利用逆向云算法将评分频度向量转换为评分特征向量，评分特征向量反映了用户对项目的平均满意度，评分集中度和评分不确定度。LICM通过计算评分特征向量间的余弦夹角得到用户的相似性。LICM的优点是在整体层面上考虑用户的相似性，因此能够充分利用用户的评分信息。
+
+Luo等人[30]提出了局部用户相似性和全局用户相似性的概念，他们分别计算用户间的局部相似性和全局相似性，根据相似性大小选出局部最近邻和全局最近邻，然后计算两种最近邻的预测评分，并对评分进行混合，他们使用一个静态的权重控制参数平衡两种预测评分的贡献度。Anand等人[31]拓展了等人的工作，他们考虑了评分数据的整体稀疏度和局部稀疏度’以此估算权重控制参数，使参数的确定动态化。文献[32]采用近邻传播算法对传统方法计算得到的用户项目相似性进行更新，算法收敛后可以得到最优的相似性值。文献[33]将用户的评分差异分为若干等级，对每一等级赋予一个权重变量，建立用户相似性函数，使用遗传算法寻找函数中变量的最优解。文献[34]设计了一种适合于冷启动问题的相似性度量方法，计算用户共同评分的近似度、影响度和流行度，将三者的积作为度量用户相似性的基础。
+
+3.2.1.3结合基于内容的推荐
+
+   基于内容的推荐采用内容描述信息表示用户偏好，在协同过滤中适当结合基于内容的推荐可以丰富用户的偏好信息，降低协同过滤对用户评分的过度依赖。
+
+   高滢等人[35]根据户的评分数量确定用户等级，分别采基丁用户等级的协同过滤和基于似然关系模型（PRM）的推荐方法预测标项的评分，将户等级作为权重参数加权两种预测结果。由于结合了基于PRM的方法，评分数量较少的用户同样可以获得较高质量的推荐。Melville等人[36]使用基于内容的方法对用户评分向量中的空值进行填补，缓解评分数据的稀疏性，从而提高协同过滤的推荐质量。Li[37]等人提出了一种基于项目的概率模型，对项进行聚类来预测户在项上的评分值，聚类之前，使用内界信息对项评分向量进行扩充。Lee等人[38]将时间信息融入到协同过滤中来，他们认为越新的购买记录越能反映用户的当前兴趣，越新推出的项越能吸引用户的光。他们将购买时间和项目推出时间分为若干阶段，每一阶段赋予相应的权重值，最后基于这些时间权重完成整个推荐过程。文献[39]考查了社会化标签和时间信息对推荐结果的影响，他们分别釆用标签权值、时间权值和标签时间泡合权值对用户偏好矩阵进行修正，在修止后的信息更加丰富的矩阵上计算标用户对项的偏好值。
+
+3.2.1.4图论
+
+Aggarwal等人[40]提出了基于Horting图的协同过滤推荐算法。Horting图中的节点表示用户，节点之间的边表示用户之间的相似度，在图中搜索近邻节点，综合各近邻节点的评分形成最后的推荐。Horting图技术能够访问对当前项目没有进行评分的用户，因此可以探究更深层次的用户传递关系。Papagelis等人[41]使用社会网络模型缓解评分数据的稀疏性，社会网络由用户空间、项目空间、用户对项目的评分活动及用户间的相似关系构成，经过网络上一系列的信任推导(trust inferences)可以在用户之间建立新的关联，从而使无共同评分项的用户也能够互相进行项目推荐。Zhou等人[42]将对分网络(bipartite network)引入到个性化推荐中，提出了一种基于网络推理的推荐方法NBI。NBI将用户和项目映射为对分网络中的两组节点，节点间的边表示用户对项目有所关注。NBI为目标用户关注过的每个项目分配一个单位的资源，这些资源通过边传递给用户，再从用户重新传回给项目，最后获得资源最多的前N个项目被推荐给目标用户。
+
+3.2.2针对多内容问题的相关技术分析比较
+
+多内容问题首先由Yu等人[43]提出，他们指出传统的协同过滤算法没有考虑项类别的影响，当网站中项目类别的内容完全不同时，传统的协同过滤算法搜寻出的最近邻往往不够合理，导致推荐质量较差。针对这一问题，他们首先计算目标项目与其他项的相似性，确定标项目所属类别，然后在标项目所属类别中搜寻目标用户的最近邻。由于所有最近邻对被预测项的内容都比较熟悉，因此推荐精度较高。但是等人的方法仅在一个项目类别中搜寻最近邻，实际的网站中用户的评分非常稀疏，一个项目类别中的评分就更加稀疏，使得他们的方法在实际的应用中效果很差。与多内容问题相关的研究还有：李聪等人[25]也是在一个项目类别中搜寻最近邻称为领域最近邻，采用领域最近邻的评分预测用户评分项并集中的评分空值，该方法与等人的方法存在着同样的问题。张海鹏[44]等人构建了用户项目类别矩阵，矩阵中的每一列表示一个类中心，列中的元素表示用户对类中所有项的评分均值。他们计算项目与所有类中心的相似性，选择相似性较大的类中心作为最近邻，预测项目的评分，并对用户项评分矩阵进行填补。由于类中心的个数太少，最近邻选择范围较窄，张海鹏等人算法的填补效果难以保证。Papagelis等人[45]根据用户在项类上积极评分数与评分总数的比值构建用户类别矩阵，在用户类别矩阵上计算用户间的类别偏好相似性，直接加权类别偏好相似性产生预测结果。无论是积极评分还是消极评分都表达了户对项目所属类别的关注，Papagelis等人使用用户间的类别偏好相似性，而不是评分相似性进行评分预测，结果的可靠性还有待检验。
+
+3.2.2针对可扩展性问题的相关技术分析比较
+
+协同过滤算法最耗时的环节是相似性计算，计算目标用户与所有用户的相似性，其复杂度（m是表示网站中用户的数量，n表示项目的数量）。实际的网站中，用户和项目的数量通常可以达到上百万，使得协同过滤算法的可扩展性受到严峻挑战。研究人员针对这一问题展开了广泛研究，并取得了不少成果，改善协同过滤可扩展性问题的方法可分为数据集缩减、聚类、矩阵分解、主成分分析几类。
+
+3.2.2.1数据集缩减
+
+采用适当的方法对评分数据集进行缩减，可以降低数据集的规模，提高算法的运行速度。最简单的做法是删除评分数低丁一定数目的用户和项，在剩余的评分矩阵上计算用户的相似性[46]。这样做的缺点是会导致部分用户得不到推荐以及部分项无法被推荐给有需求的用户。Yu等人[47]指出可以从整个用户评分数据库中选出一个小子集，即“描述空间”(profile space),在描述空间上搜寻目标用户的最近邻，以提高算法的推荐速度。Russell等人[48]使用小波数据压缩(wavelet data reduction)对项目空间进行压缩，使项评分向量的数成倍减小，然后在缩小了的项目空间中使用传统的协同过滤算法产生推荐。Russel等人的方法的优点在于减少项评分向量数目的同时极大限度的保留了原始评分信息。Acilar等人[49]提出了一种基于人工免疫网络（artificial immune network）的协同过滤模型使用人工免疫网络算法对用户评分矩阵进行压缩，压缩后矩阵中的户数目明显减少，评分数据稀疏度大大降低。
+
+3.2.2.2聚类
+
+  Sarwar等人[50]使用聚类算法对用户项目评分矩阵进行聚类，选择目标用户
+
+所在聚类的用户作为最近邻集合，通过减小最近邻搜寻空间的方式来提高协同过滤的可扩展性。李涛等人[51]同样使用聚类算法对用户进行聚类，生成若干聚类中心；然后计算每一用户与聚类中心的相似性，生成类别所属程度矩阵；最后他们在类别所属程度矩阵上搜寻目标用户的最近邻。郁雪等人[52]使用主成分分析对项空间进行降维，在维数减少了的主成分空间上使用SOM聚类算法对用户进行聚类。
+
+邓爱林等人[53]采用聚类算法对项目进行聚类生成相应的聚类中心，在此基础上计算目标项目与聚类中心的相似性，从而只需在与目标项最相似的若干个聚类中就能寻找到目标项目的大部分最近邻居并产生推荐列表。文献[54]使用内容信息对项目评分向量进行扩充，基于扩充的评分向量对项目进行聚类，然后采用一种概率模型预测用户在项上的评分值。
+
+3.2.2.3矩阵分解
+
+  通过矩阵分解可以将用户评分矩阵分解为几个维度较小的子矩阵，有利于提高协同过滤算法的实时性。文献[55]使奇异值分解将阶用户评分矩阵R分解为三个低阶矩阵：然后基于低阶矩阵队严进行协同过滤推荐。Vozalis等人[56]认为单纯使用用户的评分信息，协同过滤算法的推荐质量难以保证，他们提出了一种奇异值分解结合人口统计学数据的协同过滤算法，使人口统计学数据提高奇异值分解推荐算法的推荐精度。Chen等人[57]使用正交非负矩阵分解将评分矩阵分解为三个子矩阵，矩阵分解过程就是对用户和项目同时聚类的过程，然后将最相似的若干聚类作为标户项的候选邻居集合，缩小了最近邻的搜寻范围。Luo等人[58]提出了一种基于正则化矩阵分解的增量更新推荐算法，设计了两种更新机制IRMF和IRMF-B，以完成对评分数据的及时更新。
+
+3.2.2.4主成分分析
+
+   主成分分析是一种有效的维数约简技术，它通过线性变换将多个有相关性的变量转化为较少个数互不相关的新变量，新变量保留了原始数据的主耍信息，消除了原始数据的信息重登。Goldberg等人[59]将主成分分析应用于推荐系统中，利用主成分分析对项给定集进行全局降维，在转换后的主成分空间对用户进行聚类，产生推荐结果。Kim等人[60]提出了不需要设置给定集的迭代主成分分析方法，采用迭代主成分分析对户未评分项进行填补并对整个用户评分矩阵进行降维。Lee等人[61]对购物篮数据(二元评分矩阵)中的项维进行主成分分析，以主成分向量作为预测变量建立二元logistic回归模型，预测用户对项目的购买概率。郁雪等人[52]提出了一种基于主成分分析和SOM聚类的混合协同过滤模型，她们使用基于项目的协同过滤对电子政务数据库中的评分空值进行填补，对填补后数据的项维进行主成分分析，然后在主成分空间上使用SOM聚类对用户进行聚类，把相似性最大的聚类作为最近邻的搜寻空间。
+
+个性化推荐系统的应用场景和应用水平的分析和比较
+
+   个性化推荐产生了许多重要的应用，包括电子商务网站、视频和电影网站、音乐网络电台、在线阅读社区、媒体和邮件等。岁个个性化推荐系统为很多的电子商务、信息服务带来的全新的机遇，不过也还存在一定的问题。当前已有的个性化推荐主要应用于以下几个方面：
+
+个性化电商产品推荐
+
+目前，个性化推荐技术已被广泛应用到电商各类平台中，作为其中较为成功的协同过滤技术，受到了许多电商平台的青睐。电商网站上的产品推荐，依据用户的已访问行为记录，推荐相关的产品和服务[62]。它帮助商户充分掌握消费者对商品的个性化需求，从客户的兴趣出发，合理调整自身的产品营销策略，以更好地满足消费者的个性化消费需求。
+
+个性化图书馆资源推荐
+
+    个性化图书资源推荐服务系统[63]，基于图书资源推荐对象的特征信息及读者兴趣模型，判定读者的需求信息并进行相关性匹配; 应用推荐算法能计算和筛选与读者兴趣相关的知识资源，并向其推荐; 而读者兴趣的获取则是通过掌握读者的资源访问行为得到的。
+
+个性化旅游景点推荐
+
+    个性化旅游景点推荐考虑了用户个性化的因素，通过挖掘用户旅游的历史信息给用户做个性化推荐研究，推荐的旅游景点更加符用户的个性化需求[64]。贝叶斯网络和层次分析法、协同过滤算法、使用GPS 轨迹数据、基于主题模型等许多方法被应用其中。现如今，使用地理标签照片研究旅游推荐现已成为趋势。
+
+个性化音乐推荐系统
+
+    由于音乐比文本包含的内容更隐晦难懂，音乐数据与文本数据的内在结构也是完全不同的，所以多媒体数据的推荐相比文本要复杂的多[65]。包括利用音乐声学信息的相似度、音乐情感模型、通过用户自身的数据、依赖社会化网络标签、案例推理、基于内容与协同过滤算法、概率模型、构建音乐基因组等方法及技术应用与个性化音乐推荐当中，但还存在智能程度较低，推荐模式单一的缺陷。
+
+个性化新闻推荐系统
+
+    个性化新闻推荐系统是借助移动端设备上的互联网信息数据传播技术，将推荐系统安装于应用软件中，对新闻事件报道和相关资讯编辑整理、重组衔接，以信息数据系统协调构建与资源共享的方式，依照个体的差异性信息需求、阅读兴趣，为受众提供定制化、个性化的新闻推送服务。如，“今日头条”的个性化新闻推荐系统，从受众的心理需求出发，根据受众用户的差异化阅读习惯和兴趣爱好，实施新闻信息推荐传播[66]。其也存在一定缺陷：缩小了用户的阅读范围，不利于丰富受众阅读体验，对新闻的不同解读也会造成推荐系统对受众阅读需求的误判。
+
+个性化电子健康推荐服务
+
+    电子健康通过局域网、互联网和电信网等信息网络将医院、保健机构、药房、家庭以及其他相关机构连接成一个整体，为医疗健康事业提供强大的技术支撑和信息资源[67]。它基于个体的健康现状（既往病史、健康体检、生活饮食习惯和周边环境等信息），对个体的生活方式和行为习惯进行调查，建立个人健康档案。电子健康服务推荐通过对个人健康危险因素进行科学、系统和专业的分析与评估，结合服务用户的行为偏好、需求特点以及所处情境信息等因素，为用户推荐合适的个性化健康服务。不过，还未覆盖全国。目前如，焦点科技正在致力于做焦点健康平台，打造连接全国各地的电子健康服务平台。
+
+个性化微博好友推荐服务
+
+    社会化推荐中的好友推荐本质上是一个社交网络上的链路预测问题，其目的是根据用户现有的好友、注册信息及其行为记录为用户推荐新的好友，以达到增加整个社交网络稠密程度和用户活跃度的作用。社交网络中的好友推荐主要依据两个用户间相似性的度量[68]，项亮在《推荐系统实践》一书中提到3种不同的相似性度量方式：基于属性信息、基于社交网络图及基于用户发表的内容。其缺点是忽略了社交网络结构信息的局限性，算法还有待改进。
+
+5.其它研究和应用情况
+
+个性化推荐技术还可以应用于政府网站[69]，来优化我国政府网站的质量，提高公民浏览政府网站时对关键信息的索取，从而提高政府网站的实际效益，进而更好的人民大众服务。
+
+对于网络学习平台而言，个性化服务是一个相当重要的主题。网络学习资源平台作为一种全新的、以学习者为主体的学习方式，拥有大量的数字化学习资源。它是在个性化搜索的基础上能够根据学习者的兴趣爱好、行为特性，推荐有可能感兴趣的学习信息资源[70]。将个性化推荐技术应用到其中，大大提高了学习效率，改善了用户体验。
+
+点餐作为餐饮企业重要的服务内容之一 ，各餐饮企业为了提升自身的服务水平、增强市场竞争力，纷纷引进新的智能点餐系统[71]，可推荐菜品点餐系统就像一种的个性化推荐菜单，具有点餐准确性高、指向性强等特点。
+
+目前，国内对于个性化推荐技术的研究仍处于起步阶段，而纵观个性化推荐还有许多有待开拓的领域，协同过滤技术的应用前景非常广阔。如何合理、有效地把个性化推荐技术应用于社会生活的方方面面也是今后研究的重点。
+
+                       参考文献
+
+[1]项亮.推荐系统实践[M].北京：人民邮电出版社.2012,4-19. 
+
+[2]吴丽花,刘鲁.个性化推荐系统用户建模技术综述[J].情报学报,2006,25(1):55-62.DOI:10.3969/j.issn.1000-0135.2006.01.010.
+
+[3]Jonathan L.Herlocker, Joseph A.Konstan, Loren G.Terveen,John T.Riedl. Evaluating Collaborative Filtering Recommender Systems[J].ACM Transactions on Information Systems,2004,22(1):5-53. 
+
+[4] B Jeong,J Lee, H Cho. An iterative semi-explicit rating method for building collaborative recommender systems [J]. Expert Systems with Applications, 2009, 36(3): 6181-6186.
+
+[5] Charu C. Aggarwal. Recommender system:The Textbook[M].Switzerland:Springer International Publishing,2016,1-28. 
+
+[6] J. Bobadilla, F. Ortega, A. Hernando, A. Guti é rrez. Recommender systems survey[J].Knowledeg-Based System,2013,46:109-132. 
+
+[7] Deuk  Hee  Park,  Hyea  Kyeong  Kim,I1  Young  Choi,  Jae  Kyeong  Kim.  A  literature  review  and classification  of  recommender  systems  research[J].Expert  System with Applications,2012,39:10059-10072. 
+
+[8]Jonathan L.Herlocker, Joseph A.Konstan, Loren G.Terveen,John T.Riedl. Evaluating Collaborative Filtering Recommender Systems[J].ACM Transactions on Information Systems,2004,22(1):5-53. 
+
+[9]Joseph A. Konstan,Bradley N. Miller,David Maltz,Jonathan L. Herlocker,Lee R. Gordon,John Riedl. GroupLens[J]. Communications of the ACM,1997,40(3):.
+
+[10]B N Miller, J T Riedl, J A Konstan Experience with GroupLens: making Usenet useful again [C]. In: Proceedings of the USENIX 1997 Annual Technical Conference, 1997,219-231.
+
+[11] Quijano-Sanchez L, Recio-Garcia J, Diaz-Agudo B. Social factors in group recommender systems. ACM  Trans.  on  Intelligent  Systems  and  Technology,  2013,4(1):Article  No.8.  [doi: 10.1145/2414425/2414433]. 
+
+[12] Yehuda  Koren,  Robert  Bell,  Chris  Volinsky.  Matrix  Factorization  Techniques  for  Recommander System[J]. The IEEE Computer Society.2009,09:30-37. 
+
+[13] 王莉.基于标签的个性化推荐系统的研究[D].北京工业大学,2015. 
+
+[14] 赵钕森.基于用户行为的动态推荐系统算法[D].电子科技大学,2013. 
+
+[15] 王立才,孟祥武,张玉洁.上下文感知推荐系统[J].软件学报,2012,23(1):1-20. 
+
+[16] 孙小华. 协同过滤系统的稀疏性与冷启动问题研究[D].浙江大学,2005.
+
+[17] Zan Huang,Hsinchun Chen,Daniel Zeng. Applying associative retrieval techniques to alleviate the sparsity problem in collaborative filtering[J]. ACM Transactions on Information Systems (TOIS),2004,22(1):.
+
+[18] Yao Yu,Zhu Shanfeng,Chen Xinmeng. Collaborative filtering algorithms based on Kendall correlation in recommender systems[J]. Wuhan University Journal of Natural Sciences,2006,11(5):.
+
+[19] Guang Hua Cheng. A Collaborative Filtering Recommendation Algorithm Based on User Clustering in E-Commerce Personalized Systems[J]. Advanced Materials Research,2011,1286(267):.
+
+[20] 彭玉. 基于用户个人特征的多内容项目协同过滤推荐[D].西南大学,2007.
+
+[21] Feng Ming Liu,Hai Xia Li,Peng Dong. A Collaborative Filtering Recommendation Algorithm Combined with User and Item[J]. Applied Mechanics and Materials,2014,2987(513):.
+
+[22] 李小浩. 协同过滤推荐算法稀疏性与可扩展性问题研究[D].重庆大学,2015.
+
+[23] 邓爱林,朱扬勇,施伯乐. 基于项目评分预测的协同过滤推荐算法[J]. 软件学报,2003,(09):1621-1628.
+
+[24] 冷亚军,陆青,梁昌勇. 协同过滤推荐技术综述[J]. 模式识别与人工智能,2014,27(08):720-734.
+
+[25]李聪,梁昌勇,马丽. 基于领域最近邻的协同过滤推荐算法[J]. 计算机研究与发展,2008,(09):1532-1538.
+
+[26]张锋,常会友. 使用BP神经网络缓解协同过滤推荐算法的稀疏性问题[J]. 计算机研究与发展,2006,(04):667-672
+
+[27]X Su, T M Khoshgoftaar,R Greiner. A mixture imputation-boosted collaborative filter [C]. In:Proceedings of the 21th International Florida Artificial Intelligence Research Society
+
+Conference,2008,312-317.
+
+[28]周军锋,汤显,郭景峰一种优化的协同过滤推荐算法计算机研究与发展,2004,41(10):1842-1847.
+
+[29]张光卫,李德毅,李鹏,康建初,陈桂生. 基于云模型的协同过滤推荐算法[J]. 软件学报,2007,(10):2403-2411.
+
+[30]Heng Luo,Changyong Niu,Ruimin Shen,Carsten Ullrich. A Collaborative Filtering Framework Based on Both Local User Similarity and Global User Similarity[M].Springer Berlin Heidelberg:2008.
+
+[31]D Anand, K K Bharadwaj. Utilizing various sparsity measures for enhancing accuracy of collaborative recommender systems based on local and global similarities [J].
+
+Expert Systems with Applications,2011,38(5):5101-5109.
+
+[32]Hema Banati,Shikha Mehta. A Multi -Perspective Evaluation of MA and GA for Collaborative Filtering Recommender System[J]. International Journal of Computer Science & Information Technology,2010,2(5):.
+
+[33]Ortega, F.,Sánchez, J.-L.,Bobadilla, J. et al.Improving collaborative filtering-based recommender systems results using Pareto dominance[J].Information Sciences: An International Journal,2013,239:50-61.
+
+[34]Noman Bin Mannan,Sheikh Muhammad Sarwar,Najeeb Elahi. A New User Similarity Computation Method for Collaborative Filtering Using Artificial Neural Network[M].Springer International Publishing:2014.
+
+[35]高滢,齐红,刘杰等.结合似然关系模型和用户等级的协同过滤推荐算法[J].计算机研究与发展,2008,45(9):1463-1469.
+
+[36]Boddu Raja Sarath Kumar,, Maddali Surendra Prasad Babu.An Implementation of Content Boosted Collaborative Filtering Algorithm[J].International Journal of Engineering Science and Technology,2011,3(4).
+
+[37]Q Li,S H Myaeng, B M Kim. A probabilistic music recommender considering user opinions audio features [J]. Information Processing and Management,2007, 43(2): 473-487
+
+[38]T Q Lee, Y Park, Y T Park,A time-based approach to effective recommender systems using implicit feedback [J]. Expert Systems with Applications, 2008, 34(4):3055-3062
+
+[39]Ali Kohi,Mehrdad Jalali,Seyed Javad Ebrahimi.Tag Recommendation System for Social Annotation System[J].International Journal of Computer Science and Information Security,2011,9(8)
+
+[40]Charu C.Aggarwal,Joel L.Wolf,Kun-Lung Wu et al.Horting Hatches an Egg: A New Graph-Theoretic Approach to Collaborative Filtering[C].//KDD-99:The 5th ACM(The Association for Computing Machinery)SIGKDD International Conference on Knowledge Discovery and Data Mining.1999:201-212.
+
+[41]Zhang, Song,Li, Cong,Ma, Li,Li, Qi. Alleviating the sparsity problem of collaborative filtering using rough set[J]. Compel,2013,32(2):.
+
+[42]Zhou T,Ren J,Medo M et al.Bipartite network projection and personal recommendation[J].Physical review, E. Statistical, nonlinear, and soft matter physics,2007,76(4 Pt.2):046115-1-046115-7-0.
+
+[43]LI Yu;LIU Lu;LI Xue-feng.A hybrid collaborative filtering method for multiple-interests and multiple-content recommendation in e-commerce[J].Expert Systems with Applications,2005,28(01):67-77.DOI:10.1016/j.eswa.2004.08.013
+
+[44]张海鹏,李烈彪,李仙等.基于项目分类预测的协同过滤推荐算法[J].情报学报,2008,27(2):218-223.DOI:10.3969/j.issn.1000-0135.2008.02.010.
+
+[45]M Papagelis,D Plexousakis, I Rousidis, et al. Qualitative analysis of user-based and item-based prediction algorithms for recommendation systems [C]. In:Proceedings of the 3rd Hellenic Data Management Symposium,2004,81-90
+
+[46]G Linden, B Smith, J York,Amazon.com recommendations: item-to-item collaborative filtering [J]. IEEE Internet Computing,2003, 7(1):76-80
+
+[47]Kai Yu,Schwaighofer A.,Tresp V. et al.Probabilistic memory-based collaborative filtering[J].IEEE Transactions on Knowledge and Data Engineering,2004,16(1):56-69.
+
+[48]S Russell, V Yoon. Applications of wavelet data reduction in a recommender system[J]. Expert System with Applications, 2008,34(4):2316-2325.
+
+[49]A M Acilar,A Aeslan. A collaborative filtering method based on artificial immune network[J].Expert System with Applications, 2009, 36(4):8324-8332.
+
+[50]Facing Uncertainty in Link Recommender Systems[C].//The eleventh international world wide web conference (WWW2002).2002:1-3.
+
+[51]李涛,王建东,叶飞跃等.一种基于用户聚类的协同过滤推荐算法[J].系统工程与电子技术,2007,29(7):1178-1182.DOI:10.3321/j.issn:1001-506X.2007.07.037.
+
+[52]郁雪,李敏强.基于PCA-SOM的混合协同过滤模型[J].系统工程理论与实践,2010,30(10):1850-1854.
+
+[53]邓爱林,左子叶,朱扬勇等.基于项目聚类的协同过滤推荐算法[J].小型微型计算机系统,2004,25(9):1665-1670.DOI:10.3969/j.issn.1000-1220.2004.09.023.
+
+[54]Q Li,S H Myaeng, B M Kim. A probabilistic music recommender considering user opinions audio features [J]. Information Processing and Management,2007, 43(2): 473-487
+
+[55]Tkalcic, M.,Odic, A.,Kosir, A. et al.Affective Labeling in a Content-Based Recommender System for Images[J].IEEE transactions on multimedia,2013,15(2):391-400.
+
+[56]Manolis G. Vozalis,Konstantinos G. Margaritis. Identifying the effects of SVD and demographic data use on generalized collaborative filtering[J]. International Journal of Computer Mathematics,2008,85(12):.
+
+[57]Chen, G,Wang, F,Zhang, CS et al.Collaborative filtering using orthogonal nonnegative matrix tri-factorization[J].Information Processing &amp; Management: Libraries and Information Retrieval Systems and Communication Networks: An International Journal,2009,45(3):368-379.
+
+[58]X Luo, Y Xia, Q Zhu. Incremental collaborative filtering recommender based on regularized matrix factorization[J]. Knowledge-Based Systems,2012,27:271-280.
+
+[59]K Goldgerg, T Roeder, D Gupta, et al. Eigentaste:a constant time collaborative filtering algorithm[J]. Information Retrieval,2001,4(2):133-151.
+
+[60]D Kim,B J Yum.Collaborative filtering based on iterative principal component analysis[J].Expert Systems with Applications,2005,28(4):823-830
+
+[61]J S Lee, C H Jum, J Lee, et al.Classification-based collaborative filtering using market basket data[J]. Expert Systems with Applications,2005,29(3):700-704.
+
+[62]单明. 基于个性化推荐的电子商务推荐系统的设计与实现[D].吉林大学,2014.
+
+[63]曾子明,金鹏. 智慧图书馆个性化推荐服务体系及模式研究[J]. 图书馆杂志,2015,34(12):16-22.
+
+[64]徐旋旋. 个性化旅游景点推荐研究[D].天津理工大学,2017.
+
+[65]金蕾. 个性化音乐推荐算法的研究与实现[D].山东大学,2017.
+
+[66]曹青青. 以个性化推荐服务为特色的手机新闻客户端“今日头条”案例研究[D].北京外国语大学,2017.
+
+[67]吴颖. 基于情境感知的电子健康服务个性化推荐方法研究[D].浙江财经大学,2016.
+
+[68]许超逸. 基于微博数据的个性化好友推荐算法研究及系统实现[D].山西大学,2016.
+
+[69]孙虹. 个性化推荐技术在政府网站中的应用[J]. 电子技术与软件工程,2016,(12):27-28.
+
+[70]何莉. 个性化推荐技术在网络学习平台中的应用研究[J]. 信息与电脑(理论版),2017,(01):30-31.
+
+[71]贾龙洋. 智能荐菜点餐系统的研发[D].东北师范大学,2016.
