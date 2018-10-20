@@ -7,6 +7,8 @@ Created on Fri Oct 19 23:21:50 2018
 
 import os
 import textract
+import fnmatch, os, sys, win32com.client
+
 
 
 #import win32com.client
@@ -36,9 +38,8 @@ class DocExtractor:
         self.cache_name = cache_name
         
     def setup(self):
-        import fnmatch, os, sys, win32com.client
         self.wordapp = win32com.client.gencache.EnsureDispatch("Word.Application")
-        self.FileFormat = win32com.client.constants.wdFormatText
+        #self.FileFormat = win32com.client.constants.wdFormatText
         self.is_setup = True
     def close(self):
         if not self.is_setup:
@@ -52,14 +53,15 @@ class DocExtractor:
         path = os.path.abspath(path)
         cache_name = os.path.abspath(self.cache_name)
         
-        self.wordapp.Documents.Open(cache_name)
+        self.wordapp.Documents.Open(path)
+        #print(cache_name)
         self.wordapp.ActiveDocument.SaveAs(cache_name,
-            FileFormat = self.FileFormat)
+            FileFormat = win32com.client.constants.wdFormatText)
         self.wordapp.ActiveDocument.Close()
         
-        with open(self.cache_name, 'rb') as f:
+        with open(cache_name, 'rb') as f:
             txt = f.read()
-        with open(self.cache_name, 'wb') as f:
+        with open(cache_name, 'wb') as f:
             f.write(b'')
         return txt    
     
@@ -69,7 +71,7 @@ def extract(path):
     if path.endswith('.doc'):
         text = doc_extractor.process(path)
     elif path.endswith('.zip') or path.endswith('.rar'):
-        print(f'{path} are archive file, be sure that they are extracted before procssing')
+        print(f'{path} is archive file, be sure that they are extracted before procssing')
         raise TypeMismatch
     else:
         text = textract.process(path)
