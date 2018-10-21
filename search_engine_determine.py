@@ -143,6 +143,8 @@ def check_doc(doc, check_iter = 30, check_text_size = 25, delay_base = 0.5,
 
         idx = random.randint(0,length - check_text_size)
         text = doc[idx:idx+check_text_size]
+        if verbose:
+            print(f"testing {text}")
         #legacy requests implementation
         #res = requests.get(url, {'query': text})
         #page = res.content.decode()
@@ -160,7 +162,7 @@ def check_doc(doc, check_iter = 30, check_text_size = 25, delay_base = 0.5,
         est = dict(text = text, result = result, count = count, check_text_size = check_text_size)
         check_list.append(est)
         if verbose:
-            print(f'test {text} count: {count} {i+1}/{check_iter}')
+            print(f'count: {count} {i+1}/{check_iter}')
         time.sleep(delay_base + delay_scale * random.random())
     return check_list
 
@@ -180,6 +182,8 @@ for root,folder_list,file_list in os.walk('extracted_text'):
             if verbose:
                 print(f'skip {source_path}')
             continue
+        if verbose:
+            print(f"start checking {source_path}")
         with open(source_path, encoding='utf8') as f:
             doc = f.read()
             
