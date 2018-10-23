@@ -140,9 +140,12 @@ def check_doc(doc, check_iter = 30, check_text_size = 25, delay_base = 0.5,
     length = len(doc)
     check_list = []
     for i in range(check_iter):
-
-        idx = random.randint(0,length - check_text_size)
-        text = doc[idx:idx+check_text_size]
+        while True:
+            idx = random.randint(0,length - check_text_size)
+            text = doc[idx:idx+check_text_size]
+            if len(set(text)) > check_text_size//2:
+                break
+            print(f'text {text} is not valid, draw another again')
         if verbose:
             print(f"testing {text}")
         #legacy requests implementation
@@ -187,7 +190,7 @@ for root,folder_list,file_list in os.walk('extracted_text'):
         with open(source_path, encoding='utf8') as f:
             doc = f.read()
             
-        check_list = check_doc(doc, check_iter = 40)
+        check_list = check_doc(doc, check_iter = 40, delay_base = 15., delay_scale = 15.)
         
         with open(target_path, 'w') as f:
             json.dump(check_list, f)

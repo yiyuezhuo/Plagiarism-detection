@@ -4,3 +4,6 @@ data
 embedding
 stat
 temp.html
+model_cache
+embedding_tensor
+*.zip
