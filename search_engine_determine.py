@@ -176,11 +176,14 @@ def stat_check(check_list):
 
 verbose = True
 
+stat_name = 'stat_test'
+index_name = 'index'
+
 for root,folder_list,file_list in os.walk('extracted_text'):
     for fname in file_list:
         source_path = os.path.join(root, fname)
-        target_path = os.path.join('stat', fname+'.json')
-        index_path = os.path.join('index', fname+'.json')
+        target_path = os.path.join(stat_name, fname+'.json')
+        index_path = os.path.join(index_name, fname+'.json')
         if os.path.isfile(target_path) or os.path.isfile(index_path):
             if verbose:
                 print(f'skip {source_path}')

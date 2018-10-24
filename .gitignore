@@ -7,3 +7,5 @@ temp.html
 model_cache
 embedding_tensor
 *.zip
+__pycache__
+stat_test
