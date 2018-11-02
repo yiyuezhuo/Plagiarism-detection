@@ -62,3 +62,42 @@ class CNN_Text(nn.Module):
         x = self.dropout(x)  # (N, len(Ks)*Co)
         logit = self.fc1(x)  # (N, C)
         return logit
+    
+class CNN1DText(nn.Module):
+    def __init__(self, embed_num = 259922, embed_dim = 300, class_num = 2, kernel_num = 100, kernel_sizes = (3,4,5),
+                dropout = 0.5):
+        super(CNN1DText, self).__init__()
+        
+        self.embed_num = embed_num
+        self.embed_dim = embed_dim
+        self.class_num = class_num
+        self.kernel_num = kernel_num
+        self.kernel_sizes = kernel_sizes
+        
+        min_size = max(kernel_sizes)
+        self.pad_sizes = [((size - min_size)//2 + (size -min_size)%2 , (size -min_size)//2)  for size in kernel_sizes]
+        
+        self.embed = nn.Embedding(embed_num, embed_dim)
+        self.convs = nn.ModuleList([nn.Conv1d(embed_dim, kernel_num, kernel_size) for kernel_size in kernel_sizes])
+        self.dropout = nn.Dropout(dropout)
+        self.fc = nn.Linear(kernel_num * len(kernel_sizes), class_num) # fake fc
+    def use_pretrained_embedding(self, weights_matrix, non_trainable = True):
+        self.embed.load_state_dict({'weight': weights_matrix})
+        self.weight.requires_grad = not non_trainable
+    def batch_forward(self, x):
+        # x (L)
+        x = self.embed(x) # (L, embed_dim)
+        x = torch.unsqueeze(x.transpose(0,1),0) # (1, embed_dim, L)
+        x = [conv(x) for conv in self.convs] # [(1, kernel_num, L'), (1, kernel_num, L''), ...]
+        x = [F.pad(torch.squeeze(x[i], 0), self.pad_sizes[i]) for i in range(len(x))] # [(kernel_num, L'),...]
+        x = torch.cat(x,0) # (len(kernel_sizes)*kernel_num, L')
+        x = x.transpose(0,1) # (L', len(kernel_sizes)*kernel_num)
+        x = self.dropout(x)
+        x = self.fc(x) # (L', class_num)
+        return x # logit. softmax(x) = probability output 
+    def forward(self, x):
+        # add and remove the extra N=1 dummy dimention to leverage other procedure which can only handle such form, 
+        # such as those traning algorithm.
+        # (1, L)
+        x = self.batch_forward(torch.squeeze(x,0))
+        return torch.unsqueeze(torch.max(x,0)[0],0) #(1, class_num)
