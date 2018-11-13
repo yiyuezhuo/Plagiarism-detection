@@ -62,7 +62,6 @@ class CNN_Text(nn.Module):
         x = self.dropout(x)  # (N, len(Ks)*Co)
         logit = self.fc1(x)  # (N, C)
         return logit
-<<<<<<< HEAD
 
 class CNNText1D(nn.Module):
     # Here, I will use standard conv1d instead of conv2d and its lame appearance
@@ -93,7 +92,6 @@ class CNNText1D(nn.Module):
         
         
         
-=======
     
 class CNN1DText(nn.Module):
     def __init__(self, embed_num = 259922, embed_dim = 300, class_num = 2, kernel_num = 100, kernel_sizes = (3,4,5),
@@ -133,4 +131,3 @@ class CNN1DText(nn.Module):
         # (1, L)
         x = self.batch_forward(torch.squeeze(x,0))
         return torch.unsqueeze(torch.max(x,0)[0],0) #(1, class_num)
->>>>>>> 19da687eaffe33d8c39278ff59eae4fd8ff2b208
