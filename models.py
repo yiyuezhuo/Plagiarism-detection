@@ -62,3 +62,33 @@ class CNN_Text(nn.Module):
         x = self.dropout(x)  # (N, len(Ks)*Co)
         logit = self.fc1(x)  # (N, C)
         return logit
+
+class CNNText1D(nn.Module):
+    # Here, I will use standard conv1d instead of conv2d and its lame appearance
+    def __init__(self, embed_num, embed_dim, class_num = 2, 
+                 kernel_num = 100, kernel_sizes = (3,4,5),
+                 dropout = 0.5, pool_size = 3):
+        super(CNNText1D, self).__init__()
+        
+        self.pool_size = pool_size
+        
+        self.embed = nn.Embedding(embed_num, embed_dim)
+        # Conv1d 
+        # Input: (N, C_{in}, L_{in})`  
+        # Output: (N, C_{out}, L_{out})`
+        self.convs = nn.ModuleList([nn.Conv1d(embed_dim, kernel_num, size) for size in kernel_sizes])
+        self.dropout = nn.Dropout(dropout)
+        #self.fc1 = nn.Linear
+        self.conv_single = nn.Conv1d(kernel_num * len(kernel_sizes), class_num, 1)
+    def forward(self, x):
+        # x: (L, embed_num) 
+        x = self.embed(x)  # x: (L, embed_dim)
+        x = torch.transpose(x,0,1) # x: (embed_dim, L)
+        x = x.unsqueeze(0) # x: (N, embed_dim, L) N = 1
+        x = [F.relu(conv(x)) for conv in self.convs] #[(N, num_kernel, L-d),...]
+        x = [F.max_pool1d(y, self.pool_size) for y in x] # [N, num_kernel, L-d']
+        x = torch.cat(x, 1) 
+        
+        
+        
+        
