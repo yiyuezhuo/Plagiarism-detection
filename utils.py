@@ -60,3 +60,9 @@ def generate_doc(doc_path):
         word_list.append(list(jieba.cut(text)))
     return word_list
     
+def generate_doc_flatten(doc_path):
+    import jieba
+    
+    with open(doc_path,encoding='utf8') as f:
+        doc = f.read()
+    return list(jieba.cut(doc))

@@ -104,7 +104,7 @@ class CNN1DText(nn.Module):
         self.kernel_num = kernel_num
         self.kernel_sizes = kernel_sizes
         
-        min_size = max(kernel_sizes)
+        min_size = min(kernel_sizes)
         self.pad_sizes = [((size - min_size)//2 + (size -min_size)%2 , (size -min_size)//2)  for size in kernel_sizes]
         
         self.embed = nn.Embedding(embed_num, embed_dim)
@@ -113,7 +113,7 @@ class CNN1DText(nn.Module):
         self.fc = nn.Linear(kernel_num * len(kernel_sizes), class_num) # fake fc
     def use_pretrained_embedding(self, weights_matrix, non_trainable = True):
         self.embed.load_state_dict({'weight': weights_matrix})
-        self.weight.requires_grad = not non_trainable
+        self.embed.weight.requires_grad = not non_trainable
     def batch_forward(self, x):
         # x (L)
         x = self.embed(x) # (L, embed_dim)
@@ -131,3 +131,54 @@ class CNN1DText(nn.Module):
         # (1, L)
         x = self.batch_forward(torch.squeeze(x,0))
         return torch.unsqueeze(torch.max(x,0)[0],0) #(1, class_num)
+
+class CNNV2(nn.Module):
+    # https://github.com/Shawn1993/cnn-text-classification-pytorch/blob/master/model.py
+    def __init__(self, embed_num = 259922, embed_dim = 300, class_num = 2, kernel_num = 100, kernel_sizes = (3,4,5),
+                dropout = 0.5, word_limit = 25):
+        super(CNNV2, self).__init__()
+        
+        self.embed_num = embed_num
+        self.embed_dim = embed_dim
+        self.class_num = class_num
+        self.kernel_num = kernel_num
+        self.kernel_sizes = kernel_sizes
+        
+        self.word_limit = 25
+        self.pool_size = [self.word_limit+1 - k for k in self.kernel_sizes]
+        
+        self.embed = nn.Embedding(embed_num, embed_dim)
+        
+        # self.convs1 = [nn.Conv2d(Ci, Co, (K, D)) for K in Ks]
+        self.convs1 = nn.ModuleList([nn.Conv2d(1, kernel_num, (K, embed_dim)) for K in kernel_sizes])
+
+        self.dropout = nn.Dropout(dropout)
+        #self.fc1 = nn.Linear(len(Ks)*Co, C)
+        self.conv2 = nn.Conv1d(len(kernel_sizes)*kernel_num, 2, 1)
+
+    def use_pretrained_embedding(self, weights_matrix, non_trainable = True):
+        self.embed.load_state_dict({'weight': weights_matrix})
+        self.embed.weight.requires_grad = not non_trainable
+
+    def forward(self, x):
+        x = self.embed(x)  # (N, W, D)
+        
+        
+        x = x.unsqueeze(1)  # (N, Ci, W, D)
+
+        x = [F.relu(conv(x)).squeeze(3) for conv in self.convs1]  # [(N, Co, W), ...]*len(Ks)
+
+        if x[0].size(2) < self.pool_size[0]:
+            #x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x]  # [(N, Co), ...]*len(Ks)
+            x = [F.max_pool1d(i, i.size(2)) for i in x]  # [(N, Co), ...]*len(Ks)
+        else:
+            # batch mode
+            x = [F.max_pool1d(x[i], self.pool_size[i], stride=1) for i in range(len(x))]
+
+        x = torch.cat(x, 1)
+
+
+        x = self.dropout(x)  # (N, len(Ks)*Co)
+        #logit = self.fc1(x)  # (N, C)
+        logit = self.conv2(x)
+        return logit

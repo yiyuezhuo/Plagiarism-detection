@@ -35,8 +35,19 @@ class args():
     lr = 0.001
     
 model = CNN_Text(args)
+'''
+network without pretrained embedding with training weight on embedding layer(20000):
+    train acc 0.9050952303434804
+tensor([[4588,  213],
+        [ 370,  972]])
+test acc 0.7679738562091504
+tensor([[216,  26],
+        [ 45,  19]])
+'''
+'''
 model.load_state_dict(torch.load(load_cache_model))
 print(f'load {load_cache_model}')
+'''
 
 feature_list, target_list = embedding_manager.load_data('traning_data.json')
 feature_list_test, target_list_test = embedding_manager.load_data('testing_data.json')
@@ -54,7 +65,7 @@ if cuda:
 
 #for i in range(100000):
 len_data = len(feature_list)
-n_iter = 2000
+n_iter = 20000
 
 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001)
@@ -99,3 +110,13 @@ print(confuse_matrix(feature_list_test, target_list_test))
     
 good_list = analysis_doc('extracted_text/AI报告_杨帆_117106010714.docx.txt')
 bad_list = analysis_doc('extracted_text/AI报告_张佳洛_117106021976.docx.txt')
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+plt.plot(good_list)
+plt.title(np.mean(good_list))
+plt.show()
+plt.plot(bad_list)
+plt.title(np.mean(bad_list))
+plt.show(np.mean(bad_list))

@@ -6,7 +6,7 @@ Created on Wed Oct 24 21:27:17 2018
 """
 
 import torch
-from utils import generate_doc
+from utils import generate_doc, generate_doc_flatten
 import torch.nn.functional as F
 
 class EvaluationManager:
@@ -47,13 +47,13 @@ class EvaluationManager:
                     mat[1,1] += 1
         return mat
     
-    def analysis_doc(self, doc_path, cuda=True):
+    def analysis_doc(self, doc_path):
         embedding_manager = self.embedding_manager
         model = self.model
         
         doc = generate_doc(doc_path)
         doc_section = ([embedding_manager.word2idx(section) for section in doc])
-        if cuda:
+        if self.cuda:
             doc_section = [t.cuda() if t is not None else None for t in doc_section]
         print(f'none count: {len([t for t in doc_section if t is None])} / {len(doc_section)}')
         
@@ -65,3 +65,21 @@ class EvaluationManager:
             else:
                 plag_prob_list.append(0)
         return plag_prob_list
+    
+    def analysis_doc_batch(self, doc_path):
+        embedding_manager = self.embedding_manager
+        model = self.model
+        
+        doc = generate_doc_flatten(doc_path)
+        doc_idxs = embedding_manager.word2idx(doc)
+        if self.cuda:
+            doc_idxs = doc_idxs.cuda()
+        
+        
+        res = model(doc_idxs)
+        
+        print(f'origin:{len(doc)} encoded: {doc_idxs.size()} output: {res.size()}')
+
+        
+        return F.softmax(res, 1)[0,1,:]
+        
