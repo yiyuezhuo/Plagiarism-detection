@@ -27,15 +27,15 @@ For `AI report_Luojia_Zhang_117106021976.docx`
 
 Train set:
 
-<img src="images/image18.png">
+<img src="images/image10.png">
 
 Test set:
 
-<img src="images/image10.png">
+<img src="images/image16.png">
 
 ## Sturcture(PyTorchViz)
 
-<img src="images/image16.png">
+<img src="images/image13.png">
 
 ## Reference
 
